@@ -1,0 +1,23 @@
+{
+  "name": "spat",
+  "version": "0.0.1",
+  "description": "single page application framework for riot.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phi-jp/spat.js.git"
+  },
+  "keywords": [
+    "riot.js",
+    "spa"
+  ],
+  "author": "phi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/phi-jp/spat.js/issues"
+  },
+  "homepage": "https://github.com/phi-jp/spat.js#readme"
+}

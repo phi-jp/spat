@@ -1,0 +1,91 @@
+
+spat-nav
+  div.spat-contents(name='contents')
+
+  style(scoped, type='less').
+    :scope {
+      .spat-content {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        display: none;
+
+        &.active {
+          display: block;
+        }
+      }
+    }
+    
+  script().
+    var self = this;
+    this.stack = [];
+    this.animationName = '';
+
+    this.on('mount', function() {
+    });
+
+    this.on('updated', function() {
+      riot.route.start(true);
+    });
+    
+    this.back = function() {
+      self._back = true;
+      var content = self.stack.pop();
+      location.hash = content.localName;
+      // riot.route(content.localName);
+    };
+
+    this._swap = function(next, prev, back, done) {
+      if (!this.animationName) {
+        done();
+        return ;
+      }
+    };
+
+    riot.route(function(tagName) {
+      if (tagName === '') tagName = 'home';
+
+      var prev = self.contents.querySelector('.active');
+      var content = self.root.getElementsByTagName(tagName)[0];
+      if (!content) {
+        content = document.createElement(tagName);
+        content.classList.add('spat-content');
+        self.contents.appendChild(content);
+        riot.mount(tagName, tagName, {
+          app: self,
+        });
+      }
+      
+      content.classList.add('active');
+      
+      content._tag.trigger('active');
+
+      self._swap(content, prev, self._back, function() {
+        if (prev) {
+          prev.classList.remove('active');
+        }
+      });
+
+      self.trigger('swap', {
+        next: content,
+        prev: prev,
+        back: self._back,
+        done: function() {
+          if (prev) {
+            prev.classList.remove('active');
+          }
+        },
+      });
+      
+      self._back = false;
+      
+      // cache prev
+      self.prev = prev;
+      self.stack.push(prev);
+    });
+

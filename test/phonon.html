@@ -1,0 +1,215 @@
+<!doctype html>
+ 
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    
+    <title>${title}</title>
+    <meta name="description" content="${description}" />
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js'></script>
+    
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js'></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jade/1.11.0/jade.js'></script>
+    <!--<script src='https://cdnjs.cloudflare.com/ajax/libs/riot/2.2.4/riot+compiler.js'></script>-->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/2.3.13/riot+compiler.js'></script>
+    
+    <link rel='stylesheet' href='http://cdn.rawgit.com/quark-dev/Phonon-Framework/v1.2.5/dist/css/phonon.css' />
+    <!--<script src='http://cdn.rawgit.com/quark-dev/Phonon-Framework/v1.2.5/dist/js/phonon.js'></script>-->
+    <script src='http://cdn.rawgit.com/quark-dev/Phonon-Framework/v1.2.5/dist/js/phonon-core.js'></script>
+    <script src='http://cdn.rawgit.com/quark-dev/Phonon-Framework/v1.2.5/dist/js/components/dialogs.min.js'></script>
+
+    <style>${style}</style>
+  </head>
+  <body>
+    <app></app>
+  </body>
+</html>
+
+<script type="riot/tag" template='jade' src='../src/spat.jade'></script>
+
+<script type="riot/tag" template='jade'>
+
+app
+  spat-nav
+  nav.tabs
+    div.tab-items
+      a.tab-item.active(href='#home') Home
+      a.tab-item(href='#search') Search
+      a.tab-item(href='#notice') Notice
+      a.tab-item(href='#mypage') Mypage
+  
+  style(scoped, type='less').
+    @keyframes slide-in {
+      0% {
+        transform: translate(250px, 0px);
+        opacity: 0;
+      }
+      100% {
+        transform: translate(0px, 0px);
+        opacity: 1;
+      }
+    }
+    @keyframes slide-out {
+      0% {
+        transform: translate(0px, 0px);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-250px, 0px);
+        opacity: 0;
+      }
+    }
+    
+    :scope {
+      .spat-content {
+        -webkit-overflow-scrolling: touch;
+        animation-duration: 250ms;
+        
+        // &.show {
+        //   display: block;
+        // }
+        
+        // &.in {
+        //   animation-name: slide-in;
+        // }
+        // &.out {
+        //   animation-name: slide-in;
+        // }
+        
+        &.active {
+          display: block;
+        }
+      }
+      
+      .header-bar ~ .content {
+        margin-bottom: 50px;
+      }
+      
+      .item {
+        display: block;
+        height: 50px;
+        line-height: 50px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding-left: 1rem;
+      }
+    }
+
+  script.
+    this.tags['spat-nav'].on('swap', function(e) {
+      var time = 250;
+      var next = e.next;
+      var prev = e.prev;
+
+      var isRoot = ['home', 'search', 'notice', 'mypage'].indexOf(next.localName) !== -1;
+
+      if (isRoot && e.back !== true) {
+        e.done();
+        return ;
+      }
+
+      // if (next.)
+      
+      if (!e.back) {
+        next.style.animationName = 'slide-in';
+      }
+      else {
+        next.style.animationName = 'slide-out';
+        next.style.animationDirection = 'reverse';
+      }
+      setTimeout(function() {
+        next.style.animationName = '';
+        next.style.animationDirection = '';
+      }, time);
+      
+
+      if (prev) {
+        if (!e.back) {
+          prev.style.animationName = 'slide-out';
+        }
+        else {
+          prev.style.animationName = 'slide-in';
+          prev.style.animationDirection = 'reverse';
+        }
+        setTimeout(function() {
+          prev.style.animationName = '';
+          prev.style.animationDirection = '';
+          e.done();
+        }, time);
+      }
+      
+    });
+
+home
+  div.app-page.app-active
+    header.header-bar
+      div.center
+        h1.title ホーム
+    div.content
+      // button.btn(onclick='{alert}') alert
+      div.item(each='{items}') Home Home Home Home
+  script.
+    this.items = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},];
+    this.on('active', function() {
+      // console.log('home');
+    });
+    
+    this.alert = function() {
+      phonon.alert('Home');
+    };
+
+search
+  div.app-page.app-active
+    header.header-bar
+      div.center
+        h1.title 検索
+    div.content
+      a.item(each='{items}', href='#item') Search Search Search Search
+
+  script.
+    this.items = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},];
+    this.back = function() {
+      opts.app.back();
+    };
+
+notice
+  div.app-page.app-active
+    header.header-bar
+      div.center
+        h1.title 通知
+
+mypage
+  div.app-page.app-active
+    header.header-bar
+      div.center
+        h1.title マイページ
+
+item
+  div.app-page.app-active
+    header.header-bar
+      div.left
+        button.btn.pull-left.icon.icon-arrow-back(onclick='{opts.app.back}')
+      div.center
+        h1.title アイテム
+
+</script>
+<script>
+phonon.options({
+  navigator: {
+    // defaultPage: '',
+    // animatePages: false,
+    // enableBrowserBackButton: true,
+    // templateRootDirectory: './tpl'
+    useHash: false,
+  },
+  i18n: null // for this example, we do not use internationalization
+});
+
+riot.mount('app');
+
+document.addEventListener('DOMContentLoaded', function() {
+  FastClick.attach(document.body);
+}, false);
+</script>
