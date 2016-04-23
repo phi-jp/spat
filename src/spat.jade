@@ -14,6 +14,7 @@ spat-nav
         height: 100%;
         overflow: auto;
         -webkit-overflow-scrolling: touch;
+        backface-visibility: hidden;
 
         z-index: 5;
         animation-duration: 500ms;
@@ -30,8 +31,7 @@ spat-nav
     this.stack = [];
     this.animationMap = {
       item: {
-        name: 'slide',
-        time: 500,
+        name: 'scale',
       },
     };
 
@@ -59,34 +59,38 @@ spat-nav
 
       var time = animation.time || 500;
 
+      next.style.animationDuration = animation.time;
       if (!back) {
-        next.style.animationDuration = animation.time;
-        next.style.animationName = animation.name;
-        setTimeout(function() {
-          next.style.animationDuration = '';
-          next.style.animationName = '';
-        }, time);
+        next.style.animationName = animation.name + '-in';
       }
+      else {
+        next.style.animationDirection = 'reverse';
+        next.style.animationName = animation.name + '-out';
+      }
+      setTimeout(function() {
+        next.style.animationDuration = '';
+        next.style.animationDirection = '';
+        next.style.animationName = '';
+      }, time);
 
       if (prev) {
-        if (back) {
-          prev.style.animationDuration = animation.time;
-          prev.style.animationDirection = 'reverse';
-          prev.style.animationName = animation.name;
-          setTimeout(function() {
-            prev.style.animationDuration = '';
-            prev.style.animationDirection = '';
-            prev.style.animationName = '';
-            done();
-          }, time);
+        prev.style.animationDuration = animation.time;
+
+        if (!back) {
+          //- prev.style.zIndex = 0;
+          prev.style.animationName = animation.name + '-out';
         }
         else {
-          prev.style.zIndex = 0;
-          setTimeout(function() {
-            prev.style.zIndex = '';
-            done();
-          }, time);
+          prev.style.animationDirection = 'reverse';
+          prev.style.animationName = animation.name + '-in';
         }
+        setTimeout(function() {
+          prev.style.animationDuration = '';
+          prev.style.animationDirection = '';
+          prev.style.animationName = '';
+          prev.style.zIndex = '';
+          done();
+        }, time);
       }
     };
 
