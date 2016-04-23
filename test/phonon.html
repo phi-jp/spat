@@ -42,59 +42,10 @@ app
       a.tab-item(href='#mypage') Mypage
   
   style(scoped, type='less').
-    @keyframes slide-in {
-      0% { transform: translate(250px, 0px); opacity: 0; }
-      100% { transform: translate(0px, 0px); opacity: 1; }
-    }
-
-    @keyframes scale-in {
-      0% { transform: scale(0.5); opacity: 0; }
-      0% { transform: scale(0.5); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    @keyframes scale-out {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.5); opacity: 0; }
-      100% { transform: scale(1.5); opacity: 0; }
-    }
-
-    @keyframes rotate-in {
-      0% {
-        transform: perspective(800px) rotateY(180deg);
-        opacity: 0;
-      }
-      100% {
-        transform: perspective(800px) rotateY(0deg);
-        opacity: 1;
-      }
-    }
-    @keyframes rotate-out {
-      0% {
-        transform: perspective(800px) rotateY(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: perspective(800px) rotateY(-180deg);
-        opacity: 0;
-      }
-    }
-    
     :scope {
       .spat-content {
-        
-        // &.show {
-        //   display: block;
-        // }
-        
-        // &.in {
-        //   animation-name: slide-in;
-        // }
-        // &.out {
-        //   animation-name: slide-in;
-        // }
-        
-        &.active {
-          display: block;
+        .app-page {
+          background-color: hsl(0, 0%, 95%);
         }
       }
       
@@ -171,6 +122,12 @@ item
         button.btn.pull-left.icon.icon-arrow-back(onclick='{opts.app.back}')
       div.center
         h1.title アイテム
+  style(scoped, type='less').
+    :scope {
+      .app-page {
+        background-color: hsla(220, 100%, 50%, 0.25) !important;
+      }
+    }
 
 </script>
 <script>
