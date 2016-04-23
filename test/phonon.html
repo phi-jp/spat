@@ -28,7 +28,8 @@
   </body>
 </html>
 
-<script type="riot/tag" template='jade' src='../src/spat.jade'></script>
+<!-- <script type="riot/tag" template='jade' src='../src/spat.jade'></script> -->
+<script src='../spat.min.js'></script>
 
 <script type="riot/tag" template='jade'>
 
@@ -64,10 +65,7 @@ app
 
   script.
     this.on('mount', function() {
-      // this.tags['spat-nav'].animationMap['search'] = {
-      //   name: 'rotate',
-      //   time: 1000,
-      // };
+
     });
 
 
@@ -77,10 +75,14 @@ home
       div.center
         h1.title ホーム
     div.content
-      // button.btn(onclick='{alert}') alert
-      div.item(each='{items}') Home Home Home Home
+      a.item(each='{items}', href='#item?animation={animation}') { animation }
   script.
-    this.items = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},];
+    this.items = [
+      { animation: 'slide' },
+      { animation: 'scale' },
+      { animation: 'rotate' },
+      {},{},{},{},{},{},{},{},{},{},{},{},{},{},{},
+    ];
     this.on('active', function() {
       // console.log('home');
     });
@@ -125,9 +127,16 @@ item
   style(scoped, type='less').
     :scope {
       .app-page {
-        background-color: hsla(220, 100%, 50%, 0.25) !important;
+        background-color: hsl(220, 100%, 90%) !important;
       }
     }
+  script.
+    this.on('active', function() {
+      var q = riot.route.query();
+      this.animation = {
+        name: q.animation || 'slide',
+      };
+    });
 
 </script>
 <script>
