@@ -48,6 +48,7 @@ app
     
     :scope {
       nav.tabs {
+        z-index: 100;
         position: fixed;
         bottom: 0px;
         width: 100%;
@@ -70,9 +71,9 @@ app
     }
 
   script.
-    this.tags['spat-nav'].on('swap', function(e) {
-      e.done();
-    });
+    // this.tags['spat-nav'].on('swap', function(e) {
+    //   console.log('swap');
+    // });
 
 home
   header

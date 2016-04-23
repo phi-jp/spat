@@ -42,7 +42,7 @@ app
       a.tab-item(href='#mypage') Mypage
   
   style(scoped, type='less').
-    @keyframes slide-in {
+    @keyframes slide {
       0% {
         transform: translate(250px, 0px);
         opacity: 0;
@@ -52,21 +52,32 @@ app
         opacity: 1;
       }
     }
-    @keyframes slide-out {
+
+    @keyframes rotate-in {
       0% {
-        transform: translate(0px, 0px);
-        opacity: 1;
+        transform: perspective(200);
+        transform: rotateY(180deg);
+        opacity: 0;
       }
       100% {
-        transform: translate(-250px, 0px);
+        transform: perspective(200);
+        transform: rotate(0);
+        opacity: 1;
+      }
+    }
+    @keyframes rotate-out {
+      0% {
+        transform: rotateY(180deg);
         opacity: 0;
+      }
+      100% {
+        transform: rotate(0);
+        opacity: 1;
       }
     }
     
     :scope {
       .spat-content {
-        -webkit-overflow-scrolling: touch;
-        animation-duration: 250ms;
         
         // &.show {
         //   display: block;
@@ -98,49 +109,13 @@ app
     }
 
   script.
-    this.tags['spat-nav'].on('swap', function(e) {
-      var time = 250;
-      var next = e.next;
-      var prev = e.prev;
-
-      var isRoot = ['home', 'search', 'notice', 'mypage'].indexOf(next.localName) !== -1;
-
-      if (isRoot && e.back !== true) {
-        e.done();
-        return ;
-      }
-
-      // if (next.)
-      
-      if (!e.back) {
-        next.style.animationName = 'slide-in';
-      }
-      else {
-        next.style.animationName = 'slide-out';
-        next.style.animationDirection = 'reverse';
-      }
-      setTimeout(function() {
-        next.style.animationName = '';
-        next.style.animationDirection = '';
-      }, time);
-      
-
-      if (prev) {
-        if (!e.back) {
-          prev.style.animationName = 'slide-out';
-        }
-        else {
-          prev.style.animationName = 'slide-in';
-          prev.style.animationDirection = 'reverse';
-        }
-        setTimeout(function() {
-          prev.style.animationName = '';
-          prev.style.animationDirection = '';
-          e.done();
-        }, time);
-      }
-      
+    this.on('mount', function() {
+      // this.tags['spat-nav'].animationMap['search'] = {
+      //   name: 'rotate',
+      //   time: 1000,
+      // };
     });
+
 
 home
   div.app-page.app-active
