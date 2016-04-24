@@ -19,7 +19,7 @@ spat-nav
         animation-duration: 500ms;
 
         display: none;
-        &.active {
+        &.spat-active {
           display: block;
         }
       }
@@ -124,7 +124,7 @@ spat-nav
     riot.route(function(tagName) {
       if (tagName === '') tagName = 'home';
 
-      var prev = self.contents.querySelector('.active');
+      var prev = self.contents.querySelector('.spat-active');
       var content = self.root.getElementsByTagName(tagName)[0];
       if (!content) {
         content = document.createElement(tagName);
@@ -143,13 +143,13 @@ spat-nav
         }
       }
       
-      content.classList.add('active');
+      content.classList.add('spat-active');
       
       content._tag.trigger('active');
 
       self._swap(content, prev, self._back, function() {
         if (prev) {
-          prev.classList.remove('active');
+          prev.classList.remove('spat-active');
         }
       });
 
@@ -157,11 +157,6 @@ spat-nav
         next: content,
         prev: prev,
         back: self._back,
-        done: function() {
-          if (prev) {
-            prev.classList.remove('active');
-          }
-        },
       });
       
       self._back = false;
