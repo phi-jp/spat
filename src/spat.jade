@@ -67,9 +67,7 @@ spat-nav
     
     this.back = function() {
       self._back = true;
-      var content = self.stack.pop();
-      location.hash = content.localName;
-      // riot.route(content.localName);
+      history.back();
     };
 
     this.replace = function() {

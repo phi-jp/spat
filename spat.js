@@ -28,9 +28,7 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
 
     this.back = function() {
       self._back = true;
-      var content = self.stack.pop();
-      location.hash = content.localName;
-
+      history.back();
     };
 
     this.replace = function() {
