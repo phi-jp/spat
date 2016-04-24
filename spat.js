@@ -10,7 +10,7 @@
 'use strict';
 
 
-riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat-nav .spat-content,[riot-tag="spat-nav"] .spat-content,[data-is="spat-nav"] .spat-content{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;overflow:auto;-webkit-overflow-scrolling:touch;backface-visibility:hidden;z-index:5;animation-duration:500ms;display:none} spat-nav .spat-content.active,[riot-tag="spat-nav"] .spat-content.active,[data-is="spat-nav"] .spat-content.active{display:block}@keyframes slide-in{ 0%{transform:translate(250px, 0);opacity:0} 100%{transform:translate(0, 0);opacity:1}}@keyframes scale-in{ 0%{transform:scale(.5);opacity:0} 0%{transform:scale(.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes scale-out{ 0%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0} 100%{transform:scale(1.5);opacity:0}}@keyframes rotate-in{ 0%{transform:perspective(800px) rotateY(180deg);opacity:0} 100%{transform:perspective(800px) rotateY(0deg);opacity:1}}@keyframes rotate-out{ 0%{transform:perspective(800px) rotateY(0deg);opacity:1} 100%{transform:perspective(800px) rotateY(-180deg);opacity:0}}', '', function(opts) {
+riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat-nav .spat-content,[riot-tag="spat-nav"] .spat-content,[data-is="spat-nav"] .spat-content{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;overflow:auto;-webkit-overflow-scrolling:touch;backface-visibility:hidden;z-index:5;animation-duration:500ms;display:none} spat-nav .spat-content.spat-active,[riot-tag="spat-nav"] .spat-content.spat-active,[data-is="spat-nav"] .spat-content.spat-active{display:block}@keyframes slide-in{ 0%{transform:translate(250px, 0);opacity:0} 100%{transform:translate(0, 0);opacity:1}}@keyframes scale-in{ 0%{transform:scale(.5);opacity:0} 0%{transform:scale(.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes scale-out{ 0%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0} 100%{transform:scale(1.5);opacity:0}}@keyframes rotate-in{ 0%{transform:perspective(800px) rotateY(180deg);opacity:0} 100%{transform:perspective(800px) rotateY(0deg);opacity:1}}@keyframes rotate-out{ 0%{transform:perspective(800px) rotateY(0deg);opacity:1} 100%{transform:perspective(800px) rotateY(-180deg);opacity:0}}', '', function(opts) {
     var self = this;
     this.stack = [];
     this.animationMap = {
@@ -84,7 +84,7 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
     riot.route(function(tagName) {
       if (tagName === '') tagName = 'home';
 
-      var prev = self.contents.querySelector('.active');
+      var prev = self.contents.querySelector('.spat-active');
       var content = self.root.getElementsByTagName(tagName)[0];
       if (!content) {
         content = document.createElement(tagName);
@@ -103,13 +103,13 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
         }
       }
 
-      content.classList.add('active');
+      content.classList.add('spat-active');
 
       content._tag.trigger('active');
 
       self._swap(content, prev, self._back, function() {
         if (prev) {
-          prev.classList.remove('active');
+          prev.classList.remove('spat-active');
         }
       });
 
@@ -117,11 +117,6 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
         next: content,
         prev: prev,
         back: self._back,
-        done: function() {
-          if (prev) {
-            prev.classList.remove('active');
-          }
-        },
       });
 
       self._back = false;
