@@ -35,6 +35,12 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
 
     };
 
+    var setAnimation = function(elm, name, duration, direction) {
+      elm.style.animationDuration = duration || '';
+      elm.style.animationDirection = direction || '';
+      elm.style.animationName = name || '';
+    };
+
     this._swap = function(next, prev, back, done) {
 
       var animation = (back !== true) ? next._tag.animation : prev._tag.animation;
@@ -46,36 +52,25 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
 
       var time = animation.time || 500;
 
-      next.style.animationDuration = animation.time;
       if (!back) {
-        next.style.animationName = animation.name + '-in';
+        setAnimation(next, animation.name + '-in', animation.time);
       }
       else {
-        next.style.animationDirection = 'reverse';
-        next.style.animationName = animation.name + '-out';
+        setAnimation(next, animation.name + '-out', animation.time, 'reverse');
       }
       setTimeout(function() {
-        next.style.animationDuration = '';
-        next.style.animationDirection = '';
-        next.style.animationName = '';
+        setAnimation(next);
       }, time);
 
       if (prev) {
-        prev.style.animationDuration = animation.time;
-
         if (!back) {
-
-          prev.style.animationName = animation.name + '-out';
+          setAnimation(prev, animation.name + '-out', animation.time);
         }
         else {
-          prev.style.animationDirection = 'reverse';
-          prev.style.animationName = animation.name + '-in';
+          setAnimation(prev, animation.name + '-in', animation.time, 'reverse');
         }
         setTimeout(function() {
-          prev.style.animationDuration = '';
-          prev.style.animationDirection = '';
-          prev.style.animationName = '';
-          prev.style.zIndex = '';
+          setAnimation(prev);
           done();
         }, time);
       }
