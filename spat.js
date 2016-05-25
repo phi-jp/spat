@@ -80,6 +80,12 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
       if (tagName === '') tagName = 'home';
 
       var prev = self.contents.querySelector('.spat-active');
+
+      if (prev && prev.getAttribute('riot-tag') === tagName) {
+        prev._tag.trigger('active');
+        return ;
+      }
+
       var content = self.root.getElementsByTagName(tagName)[0];
       if (!content) {
         content = document.createElement(tagName);
