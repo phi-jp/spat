@@ -106,7 +106,11 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
 
       content.classList.add('spat-active');
 
-      content._tag.trigger('active');
+      content._tag.trigger('active', {
+        prevTag: prev ? prev._tag : null,
+        opts: riot.spat.opts,
+        back: self._back,
+      });
 
       self._swap(content, prev, self._back, function() {
         if (prev) {
@@ -125,4 +129,23 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
       self.prev = prev;
       self.stack.push(prev);
     });
+
+    riot.spat = {
+      goto: function(e, opts) {
+        var path = '';
+        if (typeof e === 'string') {
+          path = e;
+        }
+        else {
+          path = e.currentTarget.getAttribute('href');
+        }
+        riot.spat.opts = opts;
+        riot.route(path);
+        delete riot.spat.opts;
+      },
+      back: function() {
+        self._back = true;
+        history.back();
+      },
+    };
 });
