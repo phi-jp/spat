@@ -148,6 +148,7 @@ spat-nav
       content._tag.trigger('active', {
         prevTag: prev ? prev._tag : null,
         opts: riot.spat.opts,
+        hashes: location.hash.split('/'),
         back: self._back,
       });
 
