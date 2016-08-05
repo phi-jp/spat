@@ -109,7 +109,8 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
       content._tag.trigger('active', {
         prevTag: prev ? prev._tag : null,
         opts: riot.spat.opts,
-        hashes: location.hash.split('/'),
+        hashes: location.hash.split('?')[0].split('/'),
+        query: riot.route.query(),
         back: self._back,
       });
 
