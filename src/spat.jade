@@ -134,15 +134,17 @@ spat-nav
 
       var prev = self.contents.querySelector('.spat-active');
 
+      var e = {
+        prevTag: prev ? prev._tag : null,
+        opts: riot.spat.opts,
+        hashes: location.hash.split('?')[0].split('/'),
+        query: riot.route.query(),
+        back: self._back,
+      };
+
       if (prev && prev.getAttribute('riot-tag') === tagName) {
-        prev._tag.trigger('active', {
-          prevTag: prev ? prev._tag : null,
-          opts: riot.spat.opts,
-          hashes: location.hash.split('?')[0].split('/'),
-          query: riot.route.query(),
-          back: self._back,
-        });
-        
+        prev._tag.trigger('active', e);
+
         return ;
       }
 
@@ -166,13 +168,7 @@ spat-nav
       
       content.classList.add('spat-active');
       
-      content._tag.trigger('active', {
-        prevTag: prev ? prev._tag : null,
-        opts: riot.spat.opts,
-        hashes: location.hash.split('?')[0].split('/'),
-        query: riot.route.query(),
-        back: self._back,
-      });
+      content._tag.trigger('active', e);
 
       self._swap(content, prev, self._back, function() {
         if (prev) {
