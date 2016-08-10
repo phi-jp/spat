@@ -1,5 +1,6 @@
 spat-nav
   div.spat-contents(name='contents')
+  div.spat-lock(if='{lock}')
 
   style(scoped, type='less').
     :scope {
@@ -17,11 +18,22 @@ spat-nav
 
         z-index: 5;
         animation-duration: 500ms;
+        animation-timing-function: ease-in-out;
 
         display: none;
         &.spat-active {
           display: block;
         }
+      }
+      .spat-lock {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 9999;
+        background-color: rgba(255, 0, 0, 0.2);
+        background-color: transparent;
       }
     }
     @keyframes slide-in {
@@ -55,6 +67,7 @@ spat-nav
     
   script().
     var self = this;
+    this.lock = false;
     this.stack = [];
     this.animationMap = {
       item: {
@@ -96,7 +109,7 @@ spat-nav
       //- var animation = (back !== true) ? this.animationMap[next.localName] : this.animationMap[prev.localName];
       var animation = (back !== true) ? next._tag.animation : prev._tag.animation;
 
-      if (!animation) {
+      if (!animation || !animation.name) {
         done();
         return ;
       }
@@ -126,6 +139,9 @@ spat-nav
           setAnimation(prev);
           done();
         });
+      }
+      else {
+        done();
       }
     };
 
@@ -167,13 +183,19 @@ spat-nav
       }
       
       content.classList.add('spat-active');
-      
       content._tag.trigger('active', e);
+
+
+      self.lock = true;
+      self.update();
 
       self._swap(content, prev, self._back, function() {
         if (prev) {
           prev.classList.remove('spat-active');
         }
+
+        self.lock = false;
+        self.update();
       });
 
       self.trigger('swap', {
