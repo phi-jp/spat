@@ -92,7 +92,14 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
       var prev = self.contents.querySelector('.spat-active');
 
       if (prev && prev.getAttribute('riot-tag') === tagName) {
-        prev._tag.trigger('active');
+        prev._tag.trigger('active', {
+          prevTag: prev ? prev._tag : null,
+          opts: riot.spat.opts,
+          hashes: location.hash.split('?')[0].split('/'),
+          query: riot.route.query(),
+          back: self._back,
+        });
+
         return ;
       }
 
