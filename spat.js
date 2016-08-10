@@ -41,6 +41,14 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
       elm.style.animationName = name || '';
     };
 
+    var onceEvent = function(elm, evtName, fn) {
+      var temp = function() {
+        elm.removeEventListener(evtName, temp, false);
+        fn();
+      };
+      elm.addEventListener(evtName, temp, false);
+    };
+
     this._swap = function(next, prev, back, done) {
 
       var animation = (back !== true) ? next._tag.animation : prev._tag.animation;
@@ -53,26 +61,28 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div>', 'spat
       var time = animation.time || 500;
 
       if (!back) {
-        setAnimation(next, animation.name + '-in', animation.time);
+        setAnimation(next, animation.name + '-in', time);
       }
       else {
-        setAnimation(next, animation.name + '-out', animation.time, 'reverse');
+        setAnimation(next, animation.name + '-out', time, 'reverse');
       }
-      setTimeout(function() {
+
+      onceEvent(next, 'animationend', function() {
         setAnimation(next);
-      }, time);
+      });
 
       if (prev) {
         if (!back) {
-          setAnimation(prev, animation.name + '-out', animation.time);
+          setAnimation(prev, animation.name + '-out', time);
         }
         else {
-          setAnimation(prev, animation.name + '-in', animation.time, 'reverse');
+          setAnimation(prev, animation.name + '-in', time, 'reverse');
         }
-        setTimeout(function() {
+
+        onceEvent(prev, 'animationend', function() {
           setAnimation(prev);
           done();
-        }, time);
+        });
       }
     };
 

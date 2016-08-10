@@ -28,6 +28,8 @@ spat-nav
       0% { transform: translate(250px, 0px); opacity: 0; }
       100% { transform: translate(0px, 0px); opacity: 1; }
     }
+    @keyframes slide-out {
+    }
 
     @keyframes scale-in {
       0% { transform: scale(0.5); opacity: 0; }
@@ -80,6 +82,14 @@ spat-nav
       elm.style.animationName = name || '';
     };
 
+    var onceEvent = function(elm, evtName, fn) {
+      var temp = function() {
+        elm.removeEventListener(evtName, temp, false);
+        fn();
+      };
+      elm.addEventListener(evtName, temp, false);
+    };
+
     this._swap = function(next, prev, back, done) {
       //- var animation = (back !== true) ? this.animationMap[next.localName] : this.animationMap[prev.localName];
       var animation = (back !== true) ? next._tag.animation : prev._tag.animation;
@@ -92,26 +102,28 @@ spat-nav
       var time = animation.time || 500;
 
       if (!back) {
-        setAnimation(next, animation.name + '-in', animation.time);
+        setAnimation(next, animation.name + '-in', time);
       }
       else {
-        setAnimation(next, animation.name + '-out', animation.time, 'reverse');
+        setAnimation(next, animation.name + '-out', time, 'reverse');
       }
-      setTimeout(function() {
+
+      onceEvent(next, 'animationend', function() {
         setAnimation(next);
-      }, time);
+      });
 
       if (prev) {
         if (!back) {
-          setAnimation(prev, animation.name + '-out', animation.time);
+          setAnimation(prev, animation.name + '-out', time);
         }
         else {
-          setAnimation(prev, animation.name + '-in', animation.time, 'reverse');
+          setAnimation(prev, animation.name + '-in', time, 'reverse');
         }
-        setTimeout(function() {
+
+        onceEvent(prev, 'animationend', function() {
           setAnimation(prev);
           done();
-        }, time);
+        });
       }
     };
 
