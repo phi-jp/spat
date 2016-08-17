@@ -48,4 +48,4 @@ gulp.task('watch', function(){
   gulp.watch(target, ['riot']);
 });
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['riot', 'watch']);
