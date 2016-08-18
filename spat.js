@@ -178,9 +178,15 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
         riot.route(path);
         delete riot.spat.opts;
       },
-      back: function() {
+      back: function(index) {
         self._back = true;
-        history.back();
+
+        if (typeof index === 'number') {
+          history.go(-index);
+        }
+        else {
+          history.back();
+        }
       },
     };
 });
