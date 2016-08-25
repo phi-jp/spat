@@ -107,6 +107,7 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
         opts: riot.spat.opts,
         hashes: location.hash.split('?')[0].split('/'),
         query: riot.route.query(),
+        args: Array.prototype.slice.call(arguments),
         back: self._back,
       };
 
