@@ -13,15 +13,18 @@
 riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if="{lock}" class="spat-lock"></div>', 'spat-nav .spat-content,[riot-tag="spat-nav"] .spat-content,[data-is="spat-nav"] .spat-content{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;overflow:auto;-webkit-overflow-scrolling:touch;backface-visibility:hidden;z-index:5;animation-duration:500ms;animation-timing-function:ease-in-out;display:none} spat-nav .spat-content.spat-active,[riot-tag="spat-nav"] .spat-content.spat-active,[data-is="spat-nav"] .spat-content.spat-active{display:block} spat-nav .spat-lock,[riot-tag="spat-nav"] .spat-lock,[data-is="spat-nav"] .spat-lock{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9999;background-color:rgba(255,0,0,0.2);background-color:transparent}@keyframes slide-in{ 0%{transform:translate(250px, 0);opacity:0} 100%{transform:translate(0, 0);opacity:1}}@keyframes slide-out{ 0%{opacity:1} 100%{opacity:1}}@keyframes scale-in{ 0%{transform:scale(.5);opacity:0} 0%{transform:scale(.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes scale-out{ 0%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0} 100%{transform:scale(1.5);opacity:0}}@keyframes rotate-in{ 0%{transform:perspective(800px) rotateY(180deg);opacity:0} 100%{transform:perspective(800px) rotateY(0deg);opacity:1}}@keyframes rotate-out{ 0%{transform:perspective(800px) rotateY(0deg);opacity:1} 100%{transform:perspective(800px) rotateY(-180deg);opacity:0}}', '', function(opts) {
     var self = this;
     this.lock = false;
-    this._base = '';
     this.stack = [];
     this.animationMap = {
       item: {
         name: 'scale',
       },
     };
+    this.tagName = function(tagName) {
+      return tagName || 'home';
+    };
 
     this.on('mount', function() {
+
     });
 
     this.on('updated', function() {
@@ -31,10 +34,6 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
     this.back = function() {
       self._back = true;
       history.back();
-    };
-
-    this.base = function(v) {
-      this._base = v;
     };
 
     this.replace = function() {
@@ -96,9 +95,7 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
     };
 
     riot.route(function(tagName) {
-      if (tagName === '') tagName = 'home';
-
-      tagName = self._base + tagName;
+      tagName = self.tagName(tagName);
 
       var prev = self.contents.querySelector('.spat-active');
 

@@ -68,15 +68,18 @@ spat-nav
   script().
     var self = this;
     this.lock = false;
-    this._base = '';
     this.stack = [];
     this.animationMap = {
       item: {
         name: 'scale',
       },
     };
+    this.tagName = function(tagName) {
+      return tagName || 'home';
+    };
 
     this.on('mount', function() {
+
     });
 
     this.on('updated', function() {
@@ -86,10 +89,6 @@ spat-nav
     this.back = function() {
       self._back = true;
       history.back();
-    };
-
-    this.base = function(v) {
-      this._base = v;
     };
 
     this.replace = function() {
@@ -151,9 +150,7 @@ spat-nav
     };
 
     riot.route(function(tagName) {
-      if (tagName === '') tagName = 'home';
-
-      tagName = self._base + tagName;
+      tagName = self.tagName(tagName);
 
       var prev = self.contents.querySelector('.spat-active');
 
