@@ -17,12 +17,11 @@ spat-nav
         backface-visibility: hidden;
 
         z-index: 5;
-        animation-duration: 500ms;
+        animation-duration: 300ms;
         animation-timing-function: ease-in-out;
 
-        display: none;
-        &.spat-active {
-          display: block;
+        &.spat-hide {
+          display: none;
         }
       }
       .spat-lock {
@@ -42,7 +41,7 @@ spat-nav
     }
     @keyframes slide-out {
       0% { opacity: 1; }
-      100% { opacity: 1; }
+      100% { opacity: 0.8; }
     }
 
     @keyframes scale-in {
@@ -152,7 +151,7 @@ spat-nav
     riot.route(function(tagName) {
       tagName = self.tagName(tagName);
 
-      var prev = self.contents.querySelector('.spat-active');
+      var prev = self.currentContent;
 
       var e = {
         prevTag: prev ? prev._tag : null,
@@ -165,7 +164,6 @@ spat-nav
 
       if (prev && prev.getAttribute('riot-tag') === tagName) {
         prev._tag.trigger('active', e);
-
         return ;
       }
 
@@ -191,16 +189,18 @@ spat-nav
         prev._tag.trigger('hide', e);
       }
       
-      content.classList.add('spat-active');
       content._tag.trigger('active', e);
-
 
       self.lock = true;
       self.update();
 
+      //- if (self.back) {
+      //-   debugger;
+      //- }
+
       self._swap(content, prev, self._back, function() {
         if (prev) {
-          prev.classList.remove('spat-active');
+          prev.classList.add('spat-hide');
         }
 
         self.lock = false;
@@ -213,10 +213,12 @@ spat-nav
         back: self._back,
       });
       
+      content.classList.remove('spat-hide');
       self._back = false;
       
       // cache prev
       self.prev = prev;
+      self.currentContent = content;
       self.stack.push(prev);
     });
 

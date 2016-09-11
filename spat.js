@@ -10,7 +10,7 @@
 'use strict';
 
 
-riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if="{lock}" class="spat-lock"></div>', 'spat-nav .spat-content,[riot-tag="spat-nav"] .spat-content,[data-is="spat-nav"] .spat-content{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;overflow:auto;-webkit-overflow-scrolling:touch;backface-visibility:hidden;z-index:5;animation-duration:500ms;animation-timing-function:ease-in-out;display:none} spat-nav .spat-content.spat-active,[riot-tag="spat-nav"] .spat-content.spat-active,[data-is="spat-nav"] .spat-content.spat-active{display:block} spat-nav .spat-lock,[riot-tag="spat-nav"] .spat-lock,[data-is="spat-nav"] .spat-lock{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9999;background-color:rgba(255,0,0,0.2);background-color:transparent}@keyframes slide-in{ 0%{transform:translate(250px, 0);opacity:0} 100%{transform:translate(0, 0);opacity:1}}@keyframes slide-out{ 0%{opacity:1} 100%{opacity:1}}@keyframes scale-in{ 0%{transform:scale(.5);opacity:0} 0%{transform:scale(.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes scale-out{ 0%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0} 100%{transform:scale(1.5);opacity:0}}@keyframes rotate-in{ 0%{transform:perspective(800px) rotateY(180deg);opacity:0} 100%{transform:perspective(800px) rotateY(0deg);opacity:1}}@keyframes rotate-out{ 0%{transform:perspective(800px) rotateY(0deg);opacity:1} 100%{transform:perspective(800px) rotateY(-180deg);opacity:0}}', '', function(opts) {
+riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if="{lock}" class="spat-lock"></div>', 'spat-nav .spat-content,[riot-tag="spat-nav"] .spat-content,[data-is="spat-nav"] .spat-content{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;overflow:auto;-webkit-overflow-scrolling:touch;backface-visibility:hidden;z-index:5;animation-duration:300ms;animation-timing-function:ease-in-out} spat-nav .spat-content.spat-hide,[riot-tag="spat-nav"] .spat-content.spat-hide,[data-is="spat-nav"] .spat-content.spat-hide{display:none} spat-nav .spat-lock,[riot-tag="spat-nav"] .spat-lock,[data-is="spat-nav"] .spat-lock{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9999;background-color:rgba(255,0,0,0.2);background-color:transparent}@keyframes slide-in{ 0%{transform:translate(250px, 0);opacity:0} 100%{transform:translate(0, 0);opacity:1}}@keyframes slide-out{ 0%{opacity:1} 100%{opacity:.8}}@keyframes scale-in{ 0%{transform:scale(.5);opacity:0} 0%{transform:scale(.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes scale-out{ 0%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0} 100%{transform:scale(1.5);opacity:0}}@keyframes rotate-in{ 0%{transform:perspective(800px) rotateY(180deg);opacity:0} 100%{transform:perspective(800px) rotateY(0deg);opacity:1}}@keyframes rotate-out{ 0%{transform:perspective(800px) rotateY(0deg);opacity:1} 100%{transform:perspective(800px) rotateY(-180deg);opacity:0}}', '', function(opts) {
     var self = this;
     this.lock = false;
     this.stack = [];
@@ -97,7 +97,7 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
     riot.route(function(tagName) {
       tagName = self.tagName(tagName);
 
-      var prev = self.contents.querySelector('.spat-active');
+      var prev = self.currentContent;
 
       var e = {
         prevTag: prev ? prev._tag : null,
@@ -110,7 +110,6 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
 
       if (prev && prev.getAttribute('riot-tag') === tagName) {
         prev._tag.trigger('active', e);
-
         return ;
       }
 
@@ -136,7 +135,6 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
         prev._tag.trigger('hide', e);
       }
 
-      content.classList.add('spat-active');
       content._tag.trigger('active', e);
 
       self.lock = true;
@@ -144,7 +142,7 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
 
       self._swap(content, prev, self._back, function() {
         if (prev) {
-          prev.classList.remove('spat-active');
+          prev.classList.add('spat-hide');
         }
 
         self.lock = false;
@@ -157,9 +155,11 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
         back: self._back,
       });
 
+      content.classList.remove('spat-hide');
       self._back = false;
 
       self.prev = prev;
+      self.currentContent = content;
       self.stack.push(prev);
     });
 
