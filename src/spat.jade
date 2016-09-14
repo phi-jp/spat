@@ -64,7 +64,7 @@ spat-nav
       100% { transform: perspective(800px) rotateY(-180deg); opacity: 0; }
     }
     
-  script().
+  script.
     var self = this;
     this.lock = false;
     this.stack = [];
@@ -155,7 +155,7 @@ spat-nav
 
       var e = {
         prevTag: prev ? prev._tag : null,
-        opts: riot.spat.opts,
+        opts: riot.spat.opts || {},
         hashes: location.hash.split('?')[0].split('/'),
         query: riot.route.query(),
         args: Array.prototype.slice.call(arguments),
@@ -220,6 +220,8 @@ spat-nav
       self.prev = prev;
       self.currentContent = content;
       self.stack.push(prev);
+
+      delete riot.spat.opts;
     });
 
 
@@ -235,11 +237,11 @@ spat-nav
         }
         riot.spat.opts = opts;
         riot.route(path);
-        delete riot.spat.opts;
       },
-      back: function(index) {
+      back: function(index, opts) {
         self._back = true;
 
+        riot.spat.opts = opts;
         if (typeof index === 'number') {
           history.go(-index);
         }

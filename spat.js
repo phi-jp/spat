@@ -101,7 +101,7 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
 
       var e = {
         prevTag: prev ? prev._tag : null,
-        opts: riot.spat.opts,
+        opts: riot.spat.opts || {},
         hashes: location.hash.split('?')[0].split('/'),
         query: riot.route.query(),
         args: Array.prototype.slice.call(arguments),
@@ -161,6 +161,8 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
       self.prev = prev;
       self.currentContent = content;
       self.stack.push(prev);
+
+      delete riot.spat.opts;
     });
 
     riot.spat = {
@@ -174,11 +176,11 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
         }
         riot.spat.opts = opts;
         riot.route(path);
-        delete riot.spat.opts;
       },
-      back: function(index) {
+      back: function(index, opts) {
         self._back = true;
 
+        riot.spat.opts = opts;
         if (typeof index === 'number') {
           history.go(-index);
         }
