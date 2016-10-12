@@ -142,7 +142,13 @@ riot.tag2('spat-nav', '<div name="contents" class="spat-contents"></div> <div if
 
       self._swap(content, prev, self._back, function() {
         if (prev) {
-          prev.classList.add('spat-hide');
+          if (prev._tag.cache !== false) {
+            prev.classList.add('spat-hide');
+          }
+          else {
+            var parent = prev.parentNode;
+            parent.removeChild(prev);
+          }
         }
 
         self.lock = false;
