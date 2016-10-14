@@ -4,12 +4,17 @@ spat-nav
 
   style(scoped, type='less').
     :scope {
+      display: block;
+      width: 100%;
+      height: 100%;
+      
       .spat-content {
         position: absolute;
         top: 0;
         right: 0;
         bottom: 0;
         left: 0;
+        display: block;
         width: 100%;
         height: 100%;
         overflow: auto;
@@ -149,7 +154,7 @@ spat-nav
     };
 
     riot.route(function(tagName) {
-      tagName = self.tagName(tagName);
+      tagName = self.tagName.apply(self, arguments);
 
       var prev = self.currentContent;
 
