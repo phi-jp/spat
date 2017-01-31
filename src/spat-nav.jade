@@ -1,0 +1,226 @@
+spat-nav
+  div.spat-pages(ref='pages')
+  div.spat-lock(if='{locked}')
+
+  style(scoped, type='less').
+    :scope {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+
+      .spat-pages {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+
+        .spat-page {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          backface-visibility: hidden;
+          animation-fill-mode: forwards;
+
+          &.spat-hide {
+            display: none;
+          }
+        }
+      }
+
+      .spat-lock {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 9999;
+        background-color: rgba(255, 0, 0, 0.2);
+        background-color: transparent;
+      }
+    }
+    @keyframes slide-in {
+      0% { transform: translate(250px, 0px); opacity: 0; }
+      100% { transform: translate(0px, 0px); opacity: 1; }
+    }
+    @keyframes slide-out {
+      0% { opacity: 1; }
+      100% { opacity: 0.8; }
+    }
+
+    @keyframes scale-in {
+      0% { transform: scale(0.5); opacity: 0; }
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes scale-out {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    @keyframes rotate-in {
+      0% { transform: perspective(800px) rotateY(180deg); opacity: 0; }
+      100% { transform: perspective(800px) rotateY(0deg); opacity: 1; }
+    }
+    @keyframes rotate-out {
+      0% { transform: perspective(800px) rotateY(0deg); opacity: 1; }
+      100% { transform: perspective(800px) rotateY(-180deg); opacity: 0; }
+    }
+
+  script.
+    var self = this;
+
+    this._back = false;
+    this._locked = false;
+
+    this.tagName = function(tagName) {
+      return tagName || 'home';
+    };
+
+    this.lock = function() {
+      this._locked = true;
+      this.update();
+    };
+
+    this.unlock = function() {
+      this._locked = false;
+      this.update();
+    };
+
+    this.swap = function(tagName) {
+      tagName = self.tagName.apply(self, arguments);
+
+      var prevPage = this.currentPage;
+
+      // マウント済みのページを取得
+      var page = this.refs.pages.querySelector('[data-is=' + tagName + ']');
+      // まだマウントされていなければ新たにマウントする
+      if(!page) {
+        page = document.createElement('div');
+        page.classList.add('spat-page');
+        this.refs.pages.appendChild(page);
+        riot.mount(page, tagName);
+      }
+      else {
+        if (!this._back) {
+          // 最前面に移動
+          var parent = page.parentNode;
+          parent.removeChild(page);
+          parent.appendChild(page);
+        }
+      };
+
+      // イベントオブジェクトを作成
+      var e = {
+        prevPage: prevPage,
+        currentPage: page,
+        query: route.query(),
+        args: Array.prototype.slice.call(arguments),
+        back: self._back,
+      };
+      page.classList.remove('spat-hide');
+      page._tag.trigger('show', e);
+
+      // 画面をロック
+      this.lock();
+
+      // swap animation
+      swapAnimation(page, prevPage, this._back).then(function() {
+        // 前のページがあった場合
+        if (prevPage) {
+          prevPage.classList.add('spat-hide');
+        }
+
+        self.unlock();
+      });
+
+      self._back = false;
+
+      this.currentPage = page;
+      this.prevPage = prevPage;
+    };
+
+    this.goto = function(e, opts) {
+      var path = '';
+      if (typeof e === 'string') {
+        path = e;
+      }
+      else {
+        path = e.currentTarget.getAttribute('href');
+      }
+      riot.spat.opts = opts;
+      riot.route(path);
+    };
+    this.back = function(index, opts) {
+      self._back = true;
+      if (typeof index === 'number') {
+        history.go(-index);
+      }
+      else {
+        history.back();
+      }
+    };
+
+    this.on('mount', function() {
+      route.start(true);
+    });
+
+    route(function(tagName) {
+      self.swap.apply(self, arguments);
+    });
+
+    window.spat = window.spat || {};
+    window.spat.nav = this;
+
+    /*
+     * for dom
+     */
+    var swapAnimation = function(next, prev, back) {
+      var animation = (back !== true) ? next._tag.animation : prev._tag.animation;
+
+      if (!animation || !animation.name) {
+        return Promise.resolve();
+      }
+
+      if (!back) {
+        var direction = '';
+        var nextAnimation = animation.name + '-in';
+        var prevAnimation = animation.name + '-out'
+        var duration = '256ms';
+      }
+      else {
+        var direction = 'reverse';
+        var nextAnimation = animation.name + '-out';
+        var prevAnimation = animation.name + '-in'
+        var duration = '256ms';
+      }
+
+      return new Promise(function(resolve) {
+        // 今のページをアニメーション
+        setAnimation(next, nextAnimation, duration, direction);
+        onceEvent(next, 'animationend', function() {
+          setAnimation(next);
+          resolve();
+        });
+
+        if (prev) {
+          setAnimation(prev, prevAnimation, duration, direction);
+          onceEvent(prev, 'animationend', function() {
+            setAnimation(prev);
+          });
+        }
+      });
+    };
+    var setAnimation = function(elm, name, duration, direction) {
+      elm.style.animationDuration = duration || '';
+      elm.style.animationDirection = direction || '';
+      elm.style.animationName = name || '';
+    };
+    var onceEvent = function(elm, evtName, fn) {
+      var temp = function() {
+        elm.removeEventListener(evtName, temp, false);
+        fn();
+      };
+      elm.addEventListener(evtName, temp, false);
+    };
+
