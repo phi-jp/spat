@@ -1,6 +1,6 @@
 spat-nav
   div.spat-pages(ref='pages')
-  div.spat-lock(if='{locked}')
+  div.spat-lock(if='{_locked}', ref='lock')
 
   style(scoped, type='less').
     :scope {
@@ -34,7 +34,6 @@ spat-nav
         bottom: 0;
         left: 0;
         z-index: 9999;
-        background-color: rgba(255, 0, 0, 0.2);
         background-color: transparent;
       }
     }
@@ -77,13 +76,17 @@ spat-nav
       return tagName || 'home';
     };
 
-    this.lock = function() {
+    this.lock = function(color) {
       this._locked = true;
       this.update();
+      if (color) {
+        this.refs.lock.style.backgroundColor = color;
+      }
     };
 
     this.unlock = function() {
       this._locked = false;
+      this.refs.lock.style.backgroundColor = '';
       this.update();
     };
 
