@@ -142,6 +142,8 @@ spat-nav
 
       this.currentPage = page;
       this.prevPage = prevPage;
+
+      delete spat.nav.opts;
     };
 
     this.goto = function(e, opts) {
@@ -152,8 +154,11 @@ spat-nav
       else {
         path = e.currentTarget.getAttribute('href');
       }
-      riot.spat.opts = opts;
-      riot.route(path);
+
+      spat.nav.opts = opts;
+      route(path);
+
+      e.preventDefault();
     };
     this.back = function(index, opts) {
       self._back = true;

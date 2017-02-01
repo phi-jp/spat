@@ -1,3 +1,4 @@
+
 /* 
  * spat 0.0.2
  * single page application framework for riot.js
@@ -6,10 +7,11 @@
  * Copyright (C) 2016 phi, http://phiary.me
  */
 
-
 'use strict';
 
-var spat = {};
+var spat = {
+  nav: {},
+};
 
 riot.tag2('spat-modal', '', '', '', function(opts) {
 });
@@ -85,6 +87,8 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
 
       this.currentPage = page;
       this.prevPage = prevPage;
+
+      delete spat.nav.opts;
     };
 
     this.goto = function(e, opts) {
@@ -95,8 +99,11 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
       else {
         path = e.currentTarget.getAttribute('href');
       }
-      riot.spat.opts = opts;
-      riot.route(path);
+
+      spat.nav.opts = opts;
+      route(path);
+
+      e.preventDefault();
     };
     this.back = function(index, opts) {
       self._back = true;

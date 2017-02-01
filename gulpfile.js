@@ -12,21 +12,22 @@ var header = require('gulp-header');
 var pkg = require('./package.json');
 var target = ['./src/*.jade', './src/**/*.jade'];
 var output = './';
-var banner = [
-  "/* ",
-  " * <%= pkg.name %> <%= pkg.version %>",
-  " * <%= pkg.description %>",
-  " * MIT Licensed",
-  " * ",
-  " * Copyright (C) 2016 phi, http://phiary.me",
-  " */",
-  "",
-  "",
-  "'use strict';",
-  "",
-  "var spat = {};",
-  "",
-].join('\n');
+
+var banner = `
+/* 
+ * <%= pkg.name %> <%= pkg.version %>
+ * <%= pkg.description %>
+ * MIT Licensed
+ * 
+ * Copyright (C) 2016 phi, http://phiary.me
+ */
+
+'use strict';
+
+var spat = {
+  nav: {},
+};
+`;
 
 gulp.task('riot', function() {
   gulp
