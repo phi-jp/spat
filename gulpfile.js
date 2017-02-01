@@ -24,6 +24,7 @@ var banner = [
   "",
   "'use strict';",
   "",
+  "var spat = {};",
   "",
 ].join('\n');
 

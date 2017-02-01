@@ -9,6 +9,7 @@
 
 'use strict';
 
+var spat = {};
 
 riot.tag2('spat-modal', '', '', '', function(opts) {
 });
