@@ -11,9 +11,10 @@
     
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js'></script>
     
-    <script src='http://cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js'></script>
-    <script src='http://cdnjs.cloudflare.com/ajax/libs/jade/1.11.0/jade.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/2.3.13/riot+compiler.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jade/1.11.0/jade.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/3.1.0/riot+compiler.js'></script>
+    <script src="https://cdn.jsdelivr.net/riot-route/3.1.0/route.min.js"></script>
 
     <style>
     html, body {
@@ -27,14 +28,13 @@
   </body>
 </html>
 
-<script type="riot/tag" template='jade' src='../src/spat.jade'></script>
+<script type="riot/tag" template='jade' src='../src/spat-nav.jade'></script>
 <!-- <script src='../spat.js'></script> -->
 
 <script type="riot/tag" template='jade'>
 
 app
   spat-nav
-
   nav.tabs
     div.tab-items
       a.tab-item.active(href='#home') Home
@@ -48,6 +48,8 @@ app
     }
     
     :scope {
+      display: block;
+      
       nav.tabs {
         z-index: 100;
         position: fixed;
@@ -72,6 +74,9 @@ app
     }
 
   script.
+    this.on('mount', function() {
+      window.nav = this.tags['spat-nav'];
+    });
     // this.tags['spat-nav'].on('swap', function(e) {
     //   console.log('swap');
     // });
