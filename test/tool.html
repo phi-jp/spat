@@ -1,0 +1,184 @@
+<!doctype html>
+ 
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    
+    <title>${title}</title>
+    <meta name="description" content="${description}" />
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js'></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jade/1.11.0/jade.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/3.1.0/riot+compiler.js'></script>
+    <script src="https://cdn.jsdelivr.net/riot-route/3.1.0/route.min.js"></script>
+
+    <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+    </style>
+  </head>
+  <body>
+    <div data-is='app'></div>
+  </body>
+</html>
+
+<script type="riot/tag" template='jade' src='../src/spat-nav.jade'></script>
+<!-- <script src='../spat.js'></script> -->
+
+<script type="riot/tag" template='jade'>
+
+app
+  div.container
+    div.menu
+      a(href='#mypage') ●
+      a(href='#items') ▲
+      a(href='#settings') ✕
+    div(data-is='spat-nav')
+
+  style(scoped, type='less').
+    :scope {
+      // display: flex;
+      // flex-direction: column;
+      // justify-content: space-between;
+      height: 100vh;
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .container {
+        display: flex;
+        height: 100%;
+
+        .menu {
+          width: 66px;
+          border-right: 1px solid rgba(0, 0, 0, 0.1);
+          a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+            width: 100%;
+            height: 66px;
+          }
+        }
+        .spat-page {
+          box-sizing: border-box;
+          padding: 16px;
+        }
+      }
+
+      spat-nav {
+        flex: auto;
+      }
+    }
+
+  script.
+    this.on('mount', function() {
+      this.tags['spat-nav'].tagName = function(tagName) {
+        return tagName || 'mypage';
+      };
+    });
+
+
+mypage
+  h1 マイページ
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  p Text Text Text Text Text Text Text Text Text Text Text Text
+  style(scoped, type='less').
+    :scope {
+    }
+
+items
+  h1 items
+  style(scoped, type='less').
+    :scope {
+    }
+
+settings
+  h1 settings
+  style(scoped, type='less').
+    :scope {
+    }
+
+</script>
+<script>
+
+riot.mount('app');    
+
+document.addEventListener('DOMContentLoaded', function() {
+  FastClick.attach(document.body);
+}, false);
+
+</script>
