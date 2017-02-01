@@ -48,7 +48,6 @@ app
       flex-direction: column;
       justify-content: space-between;
       height: 100vh;
-      color: white;
 
       spat-nav {
         flex: auto;
@@ -59,8 +58,7 @@ app
         width: 100%;
         height: 50px;
         line-height: 50px;
-        background-color: hsl(190, 90%, 47%);
-        color: hsl(0, 0%, 100%);
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
 
         div.tab-items {
           display: flex;
@@ -70,6 +68,11 @@ app
             text-align: center;
             flex: 1;
             color: inherit;
+            background-color: hsl(0, 0%, 100%);
+
+            &:nth-child(even) {
+              background-color: hsl(0, 0%, 96%);
+            }
           }
         }
       }
@@ -80,33 +83,28 @@ app
     });
 
 home
-  header
-    div.align-center
-      h1.title ホーム
+  navigator(title='ホーム')
   style(scoped, type='less').
     :scope {
-      background-color: red;
+      background-color: hsl(0, 80%, 90%);
       text-align: center;
     }
 
 search
-  header
-    div.align-center
-      h1.title 検索
+  navigator(title='検索')
   style(scoped, type='less').
     :scope {
-      background-color: green;
+      background-color: hsl(60, 80%, 90%);
       text-align: center;
     }
 
 notice
-  header
-    div.align-center
-      h1.title 通知
+  navigator(title='通知')
+  div.items
     a(each='{items}', href='#items/{id}') {label}
   style(scoped, type='less').
     :scope {
-      background-color: blue;
+      background-color: hsl(120, 80%, 90%);
       text-align: center;
 
       a {
@@ -121,23 +119,20 @@ notice
     ];
 
 mypage
-  header
-    div.align-center
-      h1.title マイページ
+  navigator(title='マイページ')
   style(scoped, type='less').
     :scope {
-      background-color: cyan;
+      background-color: hsl(180, 80%, 90%);
       text-align: center;
     }
 
 items
-  header
-    div.align-center
-      h1.title item: {id}
-    a(href='', onclick='{spat.nav.back}') back
+  navigator(title='Items')
+  div.title item: {id}
+  a(href='', onclick='{spat.nav.back}') back
   style(scoped, type='less').
     :scope {
-      background-color: cyan;
+      background-color: hsl(240, 80%, 90%);
       text-align: center;
     }
 
@@ -149,6 +144,20 @@ items
       this.id = e.args[1];
       this.update();
     });
+
+navigator
+  div {opts.title}
+  style(scoped, type='less').
+    :scope {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      line-height: 44px;
+      background-color: white;
+      text-align: center;
+      background-color: hsl(0, 0%, 96%);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
 
 </script>
 <script>
