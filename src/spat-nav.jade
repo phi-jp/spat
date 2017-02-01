@@ -120,6 +120,7 @@ spat-nav
         currentPage: page,
         query: route.query(),
         args: Array.prototype.slice.call(arguments),
+        opts: spat.nav.opts || {},
         back: self._back,
       };
       page.classList.remove('spat-hide');
@@ -153,12 +154,12 @@ spat-nav
       }
       else {
         path = e.currentTarget.getAttribute('href');
+        e.preventDefault();
       }
 
       spat.nav.opts = opts;
       route(path);
 
-      e.preventDefault();
     };
     this.back = function(index, opts) {
       self._back = true;

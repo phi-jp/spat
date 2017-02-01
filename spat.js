@@ -67,6 +67,7 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
         currentPage: page,
         query: route.query(),
         args: Array.prototype.slice.call(arguments),
+        opts: spat.nav.opts || {},
         back: self._back,
       };
       page.classList.remove('spat-hide');
@@ -98,12 +99,12 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
       }
       else {
         path = e.currentTarget.getAttribute('href');
+        e.preventDefault();
       }
 
       spat.nav.opts = opts;
       route(path);
 
-      e.preventDefault();
     };
     this.back = function(index, opts) {
       self._back = true;
