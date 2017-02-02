@@ -22,10 +22,6 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
     this._back = false;
     this._locked = false;
 
-    this.tagName = function(tagName) {
-      return tagName || 'home';
-    };
-
     this.lock = function(color) {
       this._locked = true;
       this.update();
@@ -41,8 +37,6 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
     };
 
     this.swap = function(tagName) {
-      tagName = self.tagName.apply(self, arguments);
-
       var prevPage = this.currentPage;
 
       var page = this.refs.pages.querySelector('[data-is=' + tagName + ']');
@@ -118,10 +112,6 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
 
     this.on('mount', function() {
       route.start(true);
-    });
-
-    route(function(tagName) {
-      self.swap.apply(self, arguments);
     });
 
     window.spat = window.spat || {};
