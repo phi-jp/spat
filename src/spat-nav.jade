@@ -73,10 +73,6 @@ spat-nav
     this._back = false;
     this._locked = false;
 
-    this.tagName = function(tagName) {
-      return tagName || 'home';
-    };
-
     this.lock = function(color) {
       this._locked = true;
       this.update();
@@ -92,8 +88,6 @@ spat-nav
     };
 
     this.swap = function(tagName) {
-      tagName = self.tagName.apply(self, arguments);
-
       var prevPage = this.currentPage;
 
       // マウント済みのページを取得
@@ -175,9 +169,9 @@ spat-nav
       route.start(true);
     });
 
-    route(function(tagName) {
-      self.swap.apply(self, arguments);
-    });
+    //- route(function(tagName) {
+    //-   self.swap.apply(self, arguments);
+    //- });
 
     window.spat = window.spat || {};
     window.spat.nav = this;

@@ -83,9 +83,10 @@ app
 
   script.
     this.on('mount', function() {
-      this.tags['spat-nav'].tagName = function(tagName) {
-        return tagName || 'mypage';
-      };
+      route(function(tagName) {
+        arguments[0] = arguments[0] || 'mypage';
+        spat.nav.swap.apply(spat.nav, arguments);
+      });
     });
 
 
