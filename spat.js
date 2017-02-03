@@ -13,7 +13,89 @@ var spat = {
   nav: {},
 };
 
-riot.tag2('spat-modal', '', '', '', function(opts) {
+riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;transform:translate3d(0, 0, 0);top:0;right:0;bottom:0;left:0;display:block;z-index:9999} spat-modal modal-content,[data-is="spat-modal"] modal-content{position:absolute;display:block;left:0;right:0;top:0;bottom:0}@keyframes modal-left-in{ 0%{transform:translateX(-200px);opacity:0} 100%{transform:translateX(0);opacity:1}}@keyframes modal-left-out{ 0%{transform:translateX(0);opacity:1} 100%{transform:translateX(-200px);opacity:0}}@keyframes modal-right-in{ 0%{transform:translateX(200px);opacity:0} 100%{transform:translateX(0);opacity:1}}@keyframes modal-right-out{ 0%{transform:translateX(0);opacity:1} 100%{transform:translateX(200px);opacity:0}}@keyframes modal-scale-in{ 0%{transform:scale(1.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes modal-scale-out{ 0%{transform:scale(1);opacity:1} 100%{transform:scale(.5);opacity:0}}', 'show="{visible}"', function(opts) {
+    var self = this;
+
+    this.open = function(page, options) {
+      var elm = document.createElement('modal-content');
+      self.root.appendChild(elm);
+      var tag = riot.mount(elm, page, options)[0];
+
+      self._openModal(tag);
+
+      tag.one('close', function() {
+        self._closeModal(tag);
+      });
+
+      self.visible = true;
+      self.update();
+
+      return tag;
+    };
+    this.alert = function(text, title) {
+      return self.open('modal-alert', {
+        text: text,
+        title: title,
+      });
+    };
+
+    this.close = function() {
+      var content = this.root.querySelector('modal-content');
+      if (!content) {
+        self.visible = false;
+      }
+      self.update();
+    };
+
+    this._openModal = function(modal) {
+      var modalElm = modal.refs.modal;
+      modalElm.classList.add('show');
+      modalElm.style.animationPlayState = 'running';
+
+      onceEvent(modalElm, 'animationend', function(e) {
+        modalElm.style.animationPlayState = 'paused';
+      });
+    };
+
+    this._closeModal = function(modal) {
+      var modalElm = modal.refs.modal;
+      modalElm.classList.add('hide');
+      modalElm.style.animationPlayState = 'running';
+
+      onceEvent(modalElm, 'animationend', function(e) {
+        modal.unmount();
+        self.close();
+      });
+    };
+
+    window.spat.modal = this;
+
+    var onceEvent = function(elm, evtName, fn) {
+      var temp = function() {
+        elm.removeEventListener(evtName, temp, false);
+        fn();
+      };
+      elm.addEventListener(evtName, temp, false);
+    };
+
+    riot.modal = {
+      open: this.open,
+      alert: function(text, title) {
+        return self.open('modal-alert', {
+          text: text,
+          title: title,
+        });
+      },
+      confirm: function(text, title) {
+        return self.open('modal-confirm', {
+          text: text,
+          title: title,
+        });
+      },
+      indicator: function(text, title) {
+        return self.open('modal-indicator');
+      },
+    };
 });
 
 riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_locked}" ref="lock" class="spat-lock"></div>', 'spat-nav,[data-is="spat-nav"]{position:relative;display:block;width:100%;height:100%} spat-nav .spat-pages,[data-is="spat-nav"] .spat-pages{position:absolute;width:100%;height:100%} spat-nav .spat-pages .spat-page,[data-is="spat-nav"] .spat-pages .spat-page{position:absolute;width:100%;height:100%;backface-visibility:hidden;animation-fill-mode:forwards;overflow:scroll} spat-nav .spat-pages .spat-page.spat-hide,[data-is="spat-nav"] .spat-pages .spat-page.spat-hide{display:none} spat-nav .spat-lock,[data-is="spat-nav"] .spat-lock{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9999;background-color:transparent}@keyframes slide-in{ 0%{transform:translate(250px, 0);opacity:0} 100%{transform:translate(0, 0);opacity:1}}@keyframes slide-out{ 0%{opacity:1} 100%{opacity:.8}}@keyframes scale-in{ 0%{transform:scale(.5);opacity:0} 0%{transform:scale(.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes scale-out{ 0%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0} 100%{transform:scale(1.5);opacity:0}}@keyframes rotate-in{ 0%{transform:perspective(800px) rotateY(180deg);opacity:0} 100%{transform:perspective(800px) rotateY(0deg);opacity:1}}@keyframes rotate-out{ 0%{transform:perspective(800px) rotateY(0deg);opacity:1} 100%{transform:perspective(800px) rotateY(-180deg);opacity:0}}', '', function(opts) {

@@ -1,0 +1,96 @@
+<!doctype html>
+ 
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    
+    <title>${title}</title>
+    <meta name="description" content="${description}" />
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js'></script>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jade/1.11.0/jade.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/3.1.0/riot+compiler.js'></script>
+    <script src="https://cdn.jsdelivr.net/riot-route/3.1.0/route.min.js"></script>
+
+    <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+    </style>
+  </head>
+  <body>
+    <div data-is='app'></div>
+  </body>
+</html>
+
+<script type="riot/tag" template='jade' src='../src/spat-nav.jade'></script>
+<script type="riot/tag" template='jade' src='../src/spat-modal.jade'></script>
+<!-- <script src='../spat.js'></script> -->
+
+<script type="riot/tag" template='jade'>
+
+app
+  div.container
+    spat-nav
+    spat-modal
+    div(onclick='{alert}') alert
+
+
+  style(scoped, type='less').
+    :scope {
+    }
+
+  script.
+    this.on('mount', function() {
+      route(function(tagName) {
+        arguments[0] = arguments[0] || 'modal';
+        spat.nav.swap.apply(spat.nav, arguments);
+      });
+    });
+
+    this.alert = function() {
+      spat.modal.alert('alert');
+    };
+
+modal
+  h1 モジュール
+  style(scoped, type='less').
+    :scope {
+
+    }
+
+modal-alert(onclick='{close}')
+  div.modal(ref='modal')
+    h2 alert
+
+  style(scoped, type='less').
+    :scope {
+      .modal {
+        &.show {
+          animation: modal-scale-in 256ms ease-in-out forwards;
+        }
+        &.hide {
+          animation: modal-scale-out 256ms ease-in-out forwards;
+        }
+      }
+    }
+  script.
+    this.close = function() {
+      this.trigger('close');
+    };
+
+</script>
+<script>
+
+riot.mount('app');    
+
+document.addEventListener('DOMContentLoaded', function() {
+  FastClick.attach(document.body);
+}, false);
+
+</script>

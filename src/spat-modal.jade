@@ -1,0 +1,134 @@
+spat-modal(show='{visible}')
+  style(scoped, type='less').
+    :scope {
+      position: fixed;
+      transform: translate3d(0, 0, 0);
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: block;
+      z-index: 9999;
+      //- background-color: rgba(0, 0, 0, 0.25);
+
+      modal-content {
+        position: absolute;
+        display: block;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
+
+      @keyframes modal-left-in {
+        0% { transform: translateX(-200px); opacity: 0; }
+        100% { transform: translateX(0px); opacity: 1; }
+      }
+      @keyframes modal-left-out {
+        0% { transform: translateX(0px); opacity: 1; }
+        100% { transform: translateX(-200px); opacity: 0; }
+      }
+
+      @keyframes modal-right-in {
+        0% { transform: translateX(200px); opacity: 0; }
+        100% { transform: translateX(0px); opacity: 1; }
+      }
+      @keyframes modal-right-out {
+        0% { transform: translateX(0px); opacity: 1; }
+        100% { transform: translateX(200px); opacity: 0; }
+      }
+
+      @keyframes modal-scale-in {
+        0% { transform: scale(1.5); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      @keyframes modal-scale-out {
+        0% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(0.5); opacity: 0; }
+      }
+    }
+
+  script.
+    var self = this;
+    
+    this.open = function(page, options) {
+      var elm = document.createElement('modal-content');
+      self.root.appendChild(elm);
+      var tag = riot.mount(elm, page, options)[0];
+
+      self._openModal(tag);
+
+      tag.one('close', function() {
+        self._closeModal(tag);
+      });
+
+      self.visible = true;
+      self.update();
+
+      return tag;
+    };
+    this.alert = function(text, title) {
+      return self.open('modal-alert', {
+        text: text,
+        title: title,
+      });
+    };
+
+    this.close = function() {
+      var content = this.root.querySelector('modal-content');
+      if (!content) {
+        self.visible = false;
+      }
+      self.update();
+    };
+
+    this._openModal = function(modal) {
+      var modalElm = modal.refs.modal;
+      modalElm.classList.add('show');
+      modalElm.style.animationPlayState = 'running';
+
+      onceEvent(modalElm, 'animationend', function(e) {
+        modalElm.style.animationPlayState = 'paused';
+      });
+    };
+
+    this._closeModal = function(modal) {
+      var modalElm = modal.refs.modal;
+      modalElm.classList.add('hide');
+      modalElm.style.animationPlayState = 'running';
+
+      onceEvent(modalElm, 'animationend', function(e) {
+        modal.unmount();
+        self.close();
+      });
+    };
+
+    window.spat.modal = this;
+
+    var onceEvent = function(elm, evtName, fn) {
+      var temp = function() {
+        elm.removeEventListener(evtName, temp, false);
+        fn();
+      };
+      elm.addEventListener(evtName, temp, false);
+    };
+
+
+    riot.modal = {
+      open: this.open,
+      alert: function(text, title) {
+        return self.open('modal-alert', {
+          text: text,
+          title: title,
+        });
+      },
+      confirm: function(text, title) {
+        return self.open('modal-confirm', {
+          text: text,
+          title: title,
+        });
+      },
+      indicator: function(text, title) {
+        return self.open('modal-indicator');
+      },
+    };
