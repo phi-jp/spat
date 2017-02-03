@@ -192,10 +192,6 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
       }
     };
 
-    this.on('mount', function() {
-      route.start(true);
-    });
-
     window.spat = window.spat || {};
     window.spat.nav = this;
 
