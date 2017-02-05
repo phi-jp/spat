@@ -119,7 +119,7 @@ home
     var ref = 'http://jsonplaceholder.typicode.com/posts';
 
     this.on('mount', function() {
-
+      this.tags['spat-scroll-loader'].load();
     });
 
     this.load = function(page) {
@@ -130,7 +130,7 @@ home
         self.update();
       });
     };
-    
+
 search
   navigator(title='検索')
   style(scoped, type='less').

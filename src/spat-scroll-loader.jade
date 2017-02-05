@@ -1,18 +1,22 @@
-spat-scroll-loader(if='{show}')
-  span loading...
+spat-scroll-loader
+  div.loader(if='{_show}')
+    span loading...
   //- i.icon-spinner9
 
   style(scoped, type='less').
     :scope {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 44px;
+      display: block;
 
-      [class^=icon] {
-        display: block;
-        font-size: 22px;
-        //- animation: spin 1s infinite linear;
+      .loader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 44px;
+        [class^=icon] {
+          display: block;
+          font-size: 22px;
+          //- animation: spin 1s infinite linear;
+        }
       }
     }
     @keyframes scroll-loader-spin {
@@ -29,8 +33,8 @@ spat-scroll-loader(if='{show}')
 
     this.init = function() {
       this.page = 0;
-      this.show = true;
-      this.lock = false;
+      this._show = true;
+      this._lock = false;
       
       return this;
     };
@@ -44,17 +48,26 @@ spat-scroll-loader(if='{show}')
           self.load();
         }
       };
-
-      this.load();
     });
 
     this.load = function() {
-      if (this.lock === true) return ;
+      if (this._lock === true) return ;
 
-      this.lock = true;
+      this._lock = true;
       var d = opts.onload(++this.page);
       d.done(function(res) {
-        self.lock = false;
+        self._lock = false;
         self.update();
       });
     };
+
+    this.show = function() { this._show = true; }
+    this.hide = function() { this._show = false; }
+
+    this.lock = function() { this._lock = true; }
+    this.unlock = function() { this._lock = false; }
+
+
+
+
+
