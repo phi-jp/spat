@@ -11,6 +11,7 @@
 
 var spat = {
   nav: {},
+  modal: {},
 };
 
 riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;transform:translate3d(0, 0, 0);top:0;right:0;bottom:0;left:0;display:block;z-index:9999} spat-modal modal-content,[data-is="spat-modal"] modal-content{position:absolute;display:block;left:0;right:0;top:0;bottom:0}@keyframes modal-left-in{ 0%{transform:translateX(-200px);opacity:0} 100%{transform:translateX(0);opacity:1}}@keyframes modal-left-out{ 0%{transform:translateX(0);opacity:1} 100%{transform:translateX(-200px);opacity:0}}@keyframes modal-right-in{ 0%{transform:translateX(200px);opacity:0} 100%{transform:translateX(0);opacity:1}}@keyframes modal-right-out{ 0%{transform:translateX(0);opacity:1} 100%{transform:translateX(200px);opacity:0}}@keyframes modal-scale-in{ 0%{transform:scale(1.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes modal-scale-out{ 0%{transform:scale(1);opacity:1} 100%{transform:scale(.5);opacity:0}}', 'show="{visible}"', function(opts) {
@@ -242,6 +243,42 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
         fn();
       };
       elm.addEventListener(evtName, temp, false);
+    };
+});
+
+riot.tag2('spat-scroll-loader', '<span>loading...</span>', 'spat-scroll-loader,[data-is="spat-scroll-loader"]{display:flex;justify-content:center;align-items:center;height:44px} spat-scroll-loader [class^=icon],[data-is="spat-scroll-loader"] [class^=icon]{display:block;font-size:22px}@keyframes scroll-loader-spin{ from{transform:rotate(0deg)} to{transform:rotate(360deg)}}', 'if="{show}"', function(opts) {
+    var self = this;
+
+    this.init = function() {
+      this.page = 0;
+      this.show = true;
+      this.lock = false;
+
+      return this;
+    };
+    this.init();
+
+    this.on('mount', function() {
+      var list = opts.parent || this.root.parentNode;
+      list.onscroll = function(e) {
+        var max = e.target.scrollHeight - e.target.offsetHeight-1;
+        if (e.target.scrollTop >= max) {
+          self.load();
+        }
+      };
+
+      this.load();
+    });
+
+    this.load = function() {
+      if (this.lock === true) return ;
+
+      this.lock = true;
+      var d = opts.onload(++this.page);
+      d.done(function(res) {
+        self.lock = false;
+        self.update();
+      });
     };
 });
 

@@ -1,0 +1,60 @@
+spat-scroll-loader(if='{show}')
+  span loading...
+  //- i.icon-spinner9
+
+  style(scoped, type='less').
+    :scope {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 44px;
+
+      [class^=icon] {
+        display: block;
+        font-size: 22px;
+        //- animation: spin 1s infinite linear;
+      }
+    }
+    @keyframes scroll-loader-spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+  script.
+    var self = this;
+
+    this.init = function() {
+      this.page = 0;
+      this.show = true;
+      this.lock = false;
+      
+      return this;
+    };
+    this.init();
+
+    this.on('mount', function() {
+      var list = opts.parent || this.root.parentNode;
+      list.onscroll = function(e) {
+        var max = e.target.scrollHeight - e.target.offsetHeight-1;
+        if (e.target.scrollTop >= max) {
+          self.load();
+        }
+      };
+
+      this.load();
+    });
+
+    this.load = function() {
+      if (this.lock === true) return ;
+
+      this.lock = true;
+      var d = opts.onload(++this.page);
+      d.done(function(res) {
+        self.lock = false;
+        self.update();
+      });
+    };
