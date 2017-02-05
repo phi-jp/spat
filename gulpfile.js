@@ -8,6 +8,7 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var header = require('gulp-header');
+var sort = require('gulp-sort');
 
 var pkg = require('./package.json');
 var target = ['./src/*.jade', './src/**/*.jade'];
@@ -34,6 +35,7 @@ gulp.task('riot', function() {
   gulp
     .src(target)
     .pipe(riot({template:'jade'}))
+    .pipe(sort())
     .pipe(concat('spat.js'))
     .pipe(header(banner, {
       pkg: pkg,
