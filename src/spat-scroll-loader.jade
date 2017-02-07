@@ -61,11 +61,11 @@ spat-scroll-loader
       });
     };
 
-    this.show = function() { this._show = true; }
-    this.hide = function() { this._show = false; }
+    this.show = function() { this._show = true; return this; }
+    this.hide = function() { this._show = false; return this; }
 
-    this.lock = function() { this._lock = true; }
-    this.unlock = function() { this._lock = false; }
+    this.lock = function() { this._lock = true; return this; }
+    this.unlock = function() { this._lock = false; return this; }
 
 
 
