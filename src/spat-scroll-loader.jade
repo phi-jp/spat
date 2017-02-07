@@ -56,8 +56,10 @@ spat-scroll-loader
       this._lock = true;
       var d = opts.onload(++this.page);
       d.done(function(res) {
-        self._lock = false;
-        self.update();
+        if (self._show) {
+          self._lock = false;
+          self.update();
+        }
       });
     };
 

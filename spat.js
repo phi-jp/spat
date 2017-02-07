@@ -274,8 +274,10 @@ riot.tag2('spat-scroll-loader', '<div if="{_show}" class="loader"><span>loading.
       this._lock = true;
       var d = opts.onload(++this.page);
       d.done(function(res) {
-        self._lock = false;
-        self.update();
+        if (self._show) {
+          self._lock = false;
+          self.update();
+        }
       });
     };
 
