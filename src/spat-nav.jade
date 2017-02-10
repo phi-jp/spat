@@ -95,7 +95,7 @@ spat-nav
       // マウント済みのページを取得
       var page = this.refs.pages.querySelector('[data-is=' + tagName + ']');
       // まだマウントされていなければ新たにマウントする
-      if(!page) {
+      if(!page || page.dataset.is === tagName) {
         page = document.createElement('div');
         page.classList.add('spat-page');
         this.refs.pages.appendChild(page);
