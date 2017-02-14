@@ -28,9 +28,7 @@
   </body>
 </html>
 
-<script type="riot/tag" template='jade' src='../src/spat-nav.jade'></script>
-<script type="riot/tag" template='jade' src='../src/spat-modal.jade'></script>
-<!-- <script src='../spat.js'></script> -->
+<script src='../spat.js'></script>
 
 <script type="riot/tag" template='jade'>
 
@@ -39,6 +37,7 @@ app
     spat-nav
     spat-modal
     div(onclick='{alert}') alert
+    div(onclick='{sidemenu}') sidemenu
 
 
   style(scoped, type='less').
@@ -57,6 +56,10 @@ app
       spat.modal.alert('alert');
     };
 
+    this.sidemenu = function() {
+      spat.modal.open('modal-sidemenu');
+    };
+
 modal
   h1 モジュール
   style(scoped, type='less').
@@ -64,25 +67,45 @@ modal
 
     }
 
-modal-alert(onclick='{close}')
+modal-alert(spat-animation='scale')
   div.modal(ref='modal')
-    h2 alert
+    h2 {opts.text}
 
   style(scoped, type='less').
     :scope {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.1);
+
       .modal {
-        &.show {
-          animation: modal-scale-in 256ms ease-in-out forwards;
-        }
-        &.hide {
-          animation: modal-scale-out 256ms ease-in-out forwards;
-        }
+        background-color: white;
+        padding: 10px 20px;
+        border-radius: 3px;
       }
     }
-  script.
-    this.close = function() {
-      this.trigger('close');
-    };
+
+modal-sidemenu(spat-animation='left')
+  div.modal(ref='modal')
+    h2 title
+    div
+      div item1
+      div item2
+      div item3
+      div item4
+      div item5
+
+  style(scoped, type='less').
+    :scope {
+      display: flex;
+      background-color: rgba(0, 0, 0, 0.1);
+
+      .modal {
+        background-color: white;
+        padding: 10px 20px;
+        width: 120px;
+      }
+    }
 
 </script>
 <script>

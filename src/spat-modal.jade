@@ -58,6 +58,12 @@ spat-modal(show='{visible}')
 
       self._openModal(tag);
 
+      tag.root.onclick = function(e) {
+        if (e.currentTarget === e.target) {
+          tag.trigger('close');
+        }
+      };
+
       tag.one('close', function() {
         self._closeModal(tag);
       });
@@ -83,24 +89,34 @@ spat-modal(show='{visible}')
     };
 
     this._openModal = function(modal) {
+      var animation = modal.root.getAttribute('spat-animation');
       var modalElm = modal.refs.modal;
-      modalElm.classList.add('show');
-      modalElm.style.animationPlayState = 'running';
 
-      onceEvent(modalElm, 'animationend', function(e) {
-        modalElm.style.animationPlayState = 'paused';
-      });
+      if (animation) {
+        modalElm.style.animationName = 'modal-' + animation + '-in';
+        modalElm.style.animationDuration = '256ms';
+        modalElm.style.animationPlayState = 'running';
+
+        onceEvent(modalElm, 'animationend', function(e) {
+          modalElm.style.animationPlayState = 'paused';
+        });
+      }
     };
 
     this._closeModal = function(modal) {
+      var animation = modal.root.getAttribute('spat-animation');
       var modalElm = modal.refs.modal;
-      modalElm.classList.add('hide');
-      modalElm.style.animationPlayState = 'running';
 
-      onceEvent(modalElm, 'animationend', function(e) {
-        modal.unmount();
-        self.close();
-      });
+      if (animation) {
+        modalElm.style.animationName = 'modal-' + animation + '-out';
+        modalElm.style.animationDuration = '256ms';
+        modalElm.style.animationPlayState = 'running';
+
+        onceEvent(modalElm, 'animationend', function(e) {
+          modal.unmount();
+          self.close();
+        });
+      }
     };
 
     window.spat.modal = this;
@@ -113,22 +129,23 @@ spat-modal(show='{visible}')
       elm.addEventListener(evtName, temp, false);
     };
 
+    window.spat.modal = this;
 
-    riot.modal = {
-      open: this.open,
-      alert: function(text, title) {
-        return self.open('modal-alert', {
-          text: text,
-          title: title,
-        });
-      },
-      confirm: function(text, title) {
-        return self.open('modal-confirm', {
-          text: text,
-          title: title,
-        });
-      },
-      indicator: function(text, title) {
-        return self.open('modal-indicator');
-      },
-    };
+    //- riot.modal = {
+    //-   open: this.open,
+    //-   alert: function(text, title) {
+    //-     return self.open('modal-alert', {
+    //-       text: text,
+    //-       title: title,
+    //-     });
+    //-   },
+    //-   confirm: function(text, title) {
+    //-     return self.open('modal-confirm', {
+    //-       text: text,
+    //-       title: title,
+    //-     });
+    //-   },
+    //-   indicator: function(text, title) {
+    //-     return self.open('modal-indicator');
+    //-   },
+    //- };
