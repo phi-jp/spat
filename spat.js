@@ -25,7 +25,7 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
       self._openModal(tag);
 
       tag.root.onclick = function(e) {
-        if (e.currentTarget === e.target) {
+        if (tag.opts.dismissible !== false && e.currentTarget === e.target) {
           tag.trigger('close');
         }
       };
@@ -43,6 +43,11 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
       return self.open('modal-alert', {
         text: text,
         title: title,
+      });
+    };
+    this.indicator = function() {
+      return self.open('modal-indicator', {
+        dismissible: false,
       });
     };
 

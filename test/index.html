@@ -38,6 +38,7 @@ app
     spat-modal
     div(onclick='{alert}') alert
     div(onclick='{sidemenu}') sidemenu
+    div(onclick='{spat.modal.indicator}') indicator
 
 
   style(scoped, type='less').
@@ -104,6 +105,20 @@ modal-sidemenu(spat-animation='left')
         background-color: white;
         padding: 10px 20px;
         width: 120px;
+      }
+    }
+
+modal-indicator(spat-animation='scale', spat-dismissible='{false}')
+  div.modal(ref='modal')
+    div sync...
+  style(scoped, type='less').
+    :scope {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.5);
+      .modal {
+        color: white;
       }
     }
 
