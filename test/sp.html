@@ -95,7 +95,7 @@ home
   navigator(title='ホーム')
   div.posts
     div(data-is='hoge')
-    div.post(each='{posts}')
+    div.post(each='{posts}', onclick='{spat.nav.goto}', href='post')
       div {title}
     spat-scroll-loader(onload='{load}') loader...
   style(scoped, type='less').
@@ -130,6 +130,14 @@ home
         self.update();
       });
     };
+
+post(spat-animation='slide')
+  navigator(title='ポスト', back='{true}')
+  style(scoped, type='less').
+    :scope {
+      background-color: hsl(30, 80%, 90%);
+      text-align: center;
+    }
 
 search
   navigator(title='検索')
@@ -167,7 +175,7 @@ mypage
       text-align: center;
     }
 
-items
+items(spat-animation='{animation}')
   navigator(title='Items')
   div.title item: {id}
   a(href='', onclick='{spat.nav.back}') back
@@ -178,18 +186,19 @@ items
     }
 
   script.
-    this.animation = {
-      name: 'slide',
-    };
+    this.animation = 'slide';
     this.on('show', function(e) {
       this.id = e.args[1];
       this.update();
     });
 
 navigator
+  div.back(if='{opts.back}', onclick='{spat.nav.back}') back
   div {opts.title}
   style(scoped, type='less').
     :scope {
+      position: relative;
+
       display: flex;
       justify-content: center;
       align-items: center;
@@ -198,6 +207,13 @@ navigator
       text-align: center;
       background-color: hsl(0, 0%, 96%);
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+      .back {
+        position: absolute;
+        left: 0px;
+        padding: 8px;
+        cursor: pointer;
+      }
     }
 
 </script>

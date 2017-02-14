@@ -197,22 +197,22 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
     window.spat.nav = this;
 
     var swapAnimation = function(next, prev, back) {
-      var animation = (back !== true) ? next._tag.animation : prev._tag.animation;
+      var animation = (back !== true) ? next.getAttribute('spat-animation') : prev.getAttribute('spat-animation');
 
-      if (!animation || !animation.name) {
+      if (!animation) {
         return Promise.resolve();
       }
 
       if (!back) {
         var direction = '';
-        var nextAnimation = animation.name + '-in';
-        var prevAnimation = animation.name + '-out'
+        var nextAnimation = animation + '-in';
+        var prevAnimation = animation + '-out'
         var duration = '256ms';
       }
       else {
         var direction = 'reverse';
-        var nextAnimation = animation.name + '-out';
-        var prevAnimation = animation.name + '-in'
+        var nextAnimation = animation + '-out';
+        var prevAnimation = animation + '-in'
         var duration = '256ms';
       }
 
