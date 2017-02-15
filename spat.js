@@ -26,13 +26,13 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
 
       tag.root.onclick = function(e) {
         if (tag.opts.dismissible !== false && e.currentTarget === e.target) {
-          tag.trigger('close');
+          tag.close();
         }
       };
 
-      tag.one('close', function() {
+      tag.close = function() {
         self._closeModal(tag);
-      });
+      };
 
       self.visible = true;
       self.update();

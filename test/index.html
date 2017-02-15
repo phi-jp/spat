@@ -38,7 +38,7 @@ app
     spat-modal
     div(onclick='{alert}') alert
     div(onclick='{sidemenu}') sidemenu
-    div(onclick='{spat.modal.indicator}') indicator
+    div(onclick='{indicator}') indicator
 
 
   style(scoped, type='less').
@@ -59,6 +59,14 @@ app
 
     this.sidemenu = function() {
       spat.modal.open('modal-sidemenu');
+    };
+
+    this.indicator = function() {
+      var i = spat.modal.indicator();
+
+      setTimeout(function() {
+        i.close();
+      }, 2000);
     };
 
 modal
