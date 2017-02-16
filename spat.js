@@ -129,7 +129,7 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
 
       var page = this.refs.pages.querySelector('[data-is=' + tagName + ']');
 
-      if(!page || page.dataset.is === tagName) {
+      if(!page || prevPage.dataset.is === tagName) {
         page = document.createElement('div');
         page.classList.add('spat-page');
         this.refs.pages.appendChild(page);
