@@ -67,6 +67,7 @@ spat-modal(show='{visible}')
       tag.close = function() {
         self._closeModal(tag);
       };
+      tag.update();
 
       self.visible = true;
       self.update();
@@ -94,7 +95,7 @@ spat-modal(show='{visible}')
     };
 
     this._openModal = function(modal) {
-      var animation = modal.root.getAttribute('spat-animation');
+      var animation = modal.root.getAttribute('spat-animation') || 'scale';
       var modalElm = modal.refs.modal;
 
       if (animation) {
@@ -109,7 +110,7 @@ spat-modal(show='{visible}')
     };
 
     this._closeModal = function(modal) {
-      var animation = modal.root.getAttribute('spat-animation');
+      var animation = modal.root.getAttribute('spat-animation') || 'scale';
       var modalElm = modal.refs.modal;
 
       if (animation) {

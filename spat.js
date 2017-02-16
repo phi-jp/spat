@@ -33,6 +33,7 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
       tag.close = function() {
         self._closeModal(tag);
       };
+      tag.update();
 
       self.visible = true;
       self.update();
@@ -60,7 +61,7 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
     };
 
     this._openModal = function(modal) {
-      var animation = modal.root.getAttribute('spat-animation');
+      var animation = modal.root.getAttribute('spat-animation') || 'scale';
       var modalElm = modal.refs.modal;
 
       if (animation) {
@@ -75,7 +76,7 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
     };
 
     this._closeModal = function(modal) {
-      var animation = modal.root.getAttribute('spat-animation');
+      var animation = modal.root.getAttribute('spat-animation') || 'scale';
       var modalElm = modal.refs.modal;
 
       if (animation) {
