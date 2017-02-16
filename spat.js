@@ -204,6 +204,8 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
     var swapAnimation = function(next, prev, back) {
       var animation = (back !== true) ? next.getAttribute('spat-animation') : prev.getAttribute('spat-animation');
 
+      animation = animation || self.animation;
+
       if (!animation) {
         return Promise.resolve();
       }
