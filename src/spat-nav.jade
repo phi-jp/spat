@@ -89,7 +89,7 @@ spat-nav
       this.update();
     };
 
-    this.swap = function(tagName) {
+    this.swap = function(tagName, opts) {
       var prevPage = this.currentPage;
 
       // マウント済みのページを取得
@@ -116,7 +116,8 @@ spat-nav
         currentPage: page,
         query: route.query(),
         args: Array.prototype.slice.call(arguments),
-        opts: spat.nav.opts || {},
+        //- opts: spat.nav.opts || {},
+        opts: opts,
         back: self._back,
       };
       page.classList.remove('spat-hide');
@@ -153,9 +154,8 @@ spat-nav
         e.preventDefault();
       }
 
-      spat.nav.opts = opts;
+      //- spat.nav.opts = opts;
       route(path);
-
     };
     this.back = function(index, opts) {
       self._back = true;

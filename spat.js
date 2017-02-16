@@ -125,7 +125,7 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
       this.update();
     };
 
-    this.swap = function(tagName) {
+    this.swap = function(tagName, opts) {
       var prevPage = this.currentPage;
 
       var page = this.refs.pages.querySelector('[data-is=' + tagName + ']');
@@ -150,7 +150,8 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
         currentPage: page,
         query: route.query(),
         args: Array.prototype.slice.call(arguments),
-        opts: spat.nav.opts || {},
+
+        opts: opts,
         back: self._back,
       };
       page.classList.remove('spat-hide');
@@ -185,9 +186,7 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
         e.preventDefault();
       }
 
-      spat.nav.opts = opts;
       route(path);
-
     };
     this.back = function(index, opts) {
       self._back = true;
