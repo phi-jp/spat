@@ -46,6 +46,12 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
         title: title,
       });
     };
+    this.confirm = function(text, title) {
+      return self.open('modal-confirm', {
+        text: text,
+        title: title,
+      });
+    };
     this.indicator = function() {
       return self.open('modal-indicator', {
         dismissible: false,
