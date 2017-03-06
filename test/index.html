@@ -58,10 +58,14 @@ app
         subtitle: 'sub title',
         buttons: [
           { label: 'Publish notes', style: 'normal' },
-          { label: 'secret', style: 'normal' },
+          { label: 'secret', style: 'disable' },
           { label: 'static', style: 'normal' },
           { label: 'delete', style: 'danger' },
         ],
+      });
+
+      sheet.on('select', function(e) {
+        console.log(e.item);
       });
 
       setInterval(function() {
