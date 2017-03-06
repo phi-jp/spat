@@ -53,10 +53,20 @@ app
         spat.nav.swap.apply(spat.nav, arguments);
       });
 
-      // var index = 0;
-      // setInterval(function() {
-      //   spat.toast.message('Hello, ' + index++);
-      // }, 1000);
+      var sheet = spat.modal.actionsheet({
+        title: 'Change the status of notes',
+        subtitle: 'sub title',
+        buttons: [
+          { label: 'Publish notes', style: 'normal' },
+          { label: 'secret', style: 'normal' },
+          { label: 'static', style: 'normal' },
+          { label: 'delete', style: 'danger' },
+        ],
+      });
+
+      setInterval(function() {
+        // spat.toast.message('Hello, ' + index++);
+      }, 1000);
     });
 
     this.alert = function() {
