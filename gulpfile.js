@@ -28,6 +28,7 @@ var banner = `
 var spat = {
   nav: {},
   modal: {},
+  toast: {},
 };
 `;
 

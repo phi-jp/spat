@@ -1,0 +1,72 @@
+spat-toast
+  
+  style(scoped, type='less').
+    :scope {
+      display: block;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+
+      toast-item {
+        margin-bottom: 10px;
+      }
+    }
+
+  script.
+    var self = this;
+    window.spat.toast = this;
+
+    this.message = function(text, timeout) {
+      var elm = document.createElement('toast-item');
+      self.root.appendChild(elm);
+      var tag = riot.mount(elm, 'spat-toast-item', {
+        text: text || 'Hello, Spat.js!',
+        timeout: timeout,
+      })[0];
+
+      tag.close = function() {
+        tag.unmount();
+      };
+    };
+
+
+spat-toast-item
+  span {opts.text}
+
+  style(scoped, type='less').
+    :scope {
+      display: flex;
+      padding: 8px 20px;
+      background-color: hsl(0, 0%, 50%);
+      color: white;
+      border-radius: 3px;
+
+      animation: toast-appear 500ms;
+
+      &.disappear {
+        animation: toast-disappear 500ms;
+      }
+
+      @keyframes toast-appear {
+        0% { transform: translateY(40px); opacity: 0; }
+        100% { transform: translateY(0px); opacity: 1; }
+      }
+
+      @keyframes toast-disappear {
+        0% { transform: translateY(0px); opacity: 1; }
+        100% { transform: translateY(-40px); opacity: 0; }
+      }
+    }
+  script.
+    var self = this;
+    var timeout = opts.timeout || 2000;
+
+    this.on('mount', function() {
+      setTimeout(function() {
+        self.root.classList.add('disappear');
+        self.root.addEventListener('animationend', function() {
+          self.close();
+        });
+      }, timeout);
+    });

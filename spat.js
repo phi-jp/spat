@@ -12,6 +12,7 @@
 var spat = {
   nav: {},
   modal: {},
+  toast: {},
 };
 
 riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;transform:translate3d(0, 0, 0);top:0;right:0;bottom:0;left:0;display:block;z-index:9999} spat-modal modal-content,[data-is="spat-modal"] modal-content{position:absolute;display:block;left:0;right:0;top:0;bottom:0}@keyframes modal-left-in{ 0%{transform:translateX(-200px);opacity:0} 100%{transform:translateX(0);opacity:1}}@keyframes modal-left-out{ 0%{transform:translateX(0);opacity:1} 100%{transform:translateX(-200px);opacity:0}}@keyframes modal-right-in{ 0%{transform:translateX(200px);opacity:0} 100%{transform:translateX(0);opacity:1}}@keyframes modal-right-out{ 0%{transform:translateX(0);opacity:1} 100%{transform:translateX(200px);opacity:0}}@keyframes modal-scale-in{ 0%{transform:scale(1.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes modal-scale-out{ 0%{transform:scale(1);opacity:1} 100%{transform:scale(.5);opacity:0}}', 'show="{visible}"', function(opts) {
@@ -298,6 +299,38 @@ riot.tag2('spat-scroll-loader', '<div if="{_show}" class="loader"><span>loading.
 
     this.lock = function() { this._lock = true; return this; }
     this.unlock = function() { this._lock = false; return this; }
+});
+
+riot.tag2('spat-toast', '', 'spat-toast,[data-is="spat-toast"]{display:block;position:fixed;top:20px;right:20px;z-index:9999} spat-toast toast-item,[data-is="spat-toast"] toast-item{margin-bottom:10px}', '', function(opts) {
+    var self = this;
+    window.spat.toast = this;
+
+    this.message = function(text, timeout) {
+      var elm = document.createElement('toast-item');
+      self.root.appendChild(elm);
+      var tag = riot.mount(elm, 'spat-toast-item', {
+        text: text || 'Hello, Spat.js!',
+        timeout: timeout,
+      })[0];
+
+      tag.close = function() {
+        tag.unmount();
+      };
+    };
+
+});
+riot.tag2('spat-toast-item', '<span>{opts.text}</span>', 'spat-toast-item,[data-is="spat-toast-item"]{display:flex;padding:8px 20px;background-color:#808080;color:white;border-radius:3px;animation:toast-appear 500ms} spat-toast-item.disappear,[data-is="spat-toast-item"].disappear{animation:toast-disappear 500ms}@keyframes toast-appear{ 0%{transform:translateY(40px);opacity:0} 100%{transform:translateY(0);opacity:1}}@keyframes toast-disappear{ 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(-40px);opacity:0}}', '', function(opts) {
+    var self = this;
+    var timeout = opts.timeout || 2000;
+
+    this.on('mount', function() {
+      setTimeout(function() {
+        self.root.classList.add('disappear');
+        self.root.addEventListener('animationend', function() {
+          self.close();
+        });
+      }, timeout);
+    });
 });
 
 riot.tag2('spat-nav-old', '<div name="contents" class="spat-contents"></div> <div if="{lock}" class="spat-lock"></div>', 'spat-nav-old,[data-is="spat-nav-old"]{display:block;width:100%;height:100%} spat-nav-old .spat-content,[data-is="spat-nav-old"] .spat-content{position:absolute;top:0;right:0;bottom:0;left:0;display:block;width:100%;height:100%;overflow:auto;-webkit-overflow-scrolling:touch;backface-visibility:hidden;z-index:5;animation-duration:300ms;animation-timing-function:ease-in-out} spat-nav-old .spat-content.spat-hide,[data-is="spat-nav-old"] .spat-content.spat-hide{display:none} spat-nav-old .spat-lock,[data-is="spat-nav-old"] .spat-lock{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9999;background-color:rgba(255,0,0,0.2);background-color:transparent}@keyframes slide-in{ 0%{transform:translate(250px, 0);opacity:0} 100%{transform:translate(0, 0);opacity:1}}@keyframes slide-out{ 0%{opacity:1} 100%{opacity:.8}}@keyframes scale-in{ 0%{transform:scale(.5);opacity:0} 0%{transform:scale(.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes scale-out{ 0%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0} 100%{transform:scale(1.5);opacity:0}}@keyframes rotate-in{ 0%{transform:perspective(800px) rotateY(180deg);opacity:0} 100%{transform:perspective(800px) rotateY(0deg);opacity:1}}@keyframes rotate-out{ 0%{transform:perspective(800px) rotateY(0deg);opacity:1} 100%{transform:perspective(800px) rotateY(-180deg);opacity:0}}', '', function(opts) {

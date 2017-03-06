@@ -36,6 +36,7 @@ app
   div.container
     spat-nav
     spat-modal
+    spat-toast
     div(onclick='{alert}') alert
     div(onclick='{sidemenu}') sidemenu
     div(onclick='{indicator}') indicator
@@ -51,6 +52,11 @@ app
         arguments[0] = arguments[0] || 'modal';
         spat.nav.swap.apply(spat.nav, arguments);
       });
+
+      // var index = 0;
+      // setInterval(function() {
+      //   spat.toast.message('Hello, ' + index++);
+      // }, 1000);
     });
 
     this.alert = function() {
