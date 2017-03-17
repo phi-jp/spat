@@ -23,7 +23,7 @@ riot.tag2('spat-modal-actionsheet', '<div ref="modal" class="modal"> <div class=
     };
 });
 
-riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{display:block}', '', function(opts) {
+riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{display:block;overflow:scroll;-webkit-overflow-scrolling:touch;overflow-scrolling:touch;height:100%}', '', function(opts) {
     var self = this;
 
     this.on('mount', function() {
@@ -41,6 +41,7 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
       this.page = 1;
       this.isLock = false;
       this.isMore = true;
+      return this;
     };
 
     this.load = function() {
@@ -52,30 +53,36 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
       if (this.opts.onload) {
         this.opts.onload(this.page++, this);
       }
+      return this;
     };
 
     this.addItem = function(item) {
       this.items.push(item);
       this.update();
+      return this;
     };
 
     this.addItems = function(items) {
       Array.prototype.push.apply(self.items, items);
       this.update();
+      return this;
     };
 
     this.lock = function() {
       this.isLock = true;
       this.update();
+      return this;
     };
     this.unlock = function() {
       this.isLock = false;
       this.update()
+      return this;
     };
 
     this.more = function(flag) {
       this.isMore = flag;
       this.update();
+      return this;
     };
 });
 
