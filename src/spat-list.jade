@@ -1,0 +1,64 @@
+spat-list
+  #{'yield'}
+
+  style(scoped, type='less').
+    :scope {
+      display: block;
+
+    }
+  script.
+    var self = this;
+
+    this.on('mount', function() {
+      this.init();
+      this.root.addEventListener('scroll', function(e) {
+        var max = e.target.scrollHeight - e.target.offsetHeight-1;
+        if (e.target.scrollTop >= max) {
+          self.load();
+        }
+      }, false);
+    });
+
+    this.init = function() {
+      this.items = [];
+      this.page = 1;
+      this.isLock = false;
+      this.isMore = true;
+    };
+
+    this.load = function() {
+      // ロック中は何もしない
+      if (this.isLock) return;
+
+      // ロック
+      this.lock();
+
+      // 追加ロード
+      if (this.opts.onload) {
+        this.opts.onload(this.page++, this);
+      }
+    };
+
+    this.addItem = function(item) {
+      this.items.push(item);
+      this.update();
+    };
+
+    this.addItems = function(items) {
+      Array.prototype.push.apply(self.items, items);
+      this.update();
+    };
+
+    this.lock = function() {
+      this.isLock = true;
+      this.update();
+    };
+    this.unlock = function() {
+      this.isLock = false;
+      this.update()
+    };
+
+    this.more = function(flag) {
+      this.isMore = flag;
+      this.update();
+    };

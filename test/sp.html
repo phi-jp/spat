@@ -23,6 +23,7 @@
     html, body {
       margin: 0;
       padding: 0;
+      overflow: hidden;
     }
     </style>
   </head>
@@ -37,7 +38,6 @@
 <script type="riot/tag" template='jade'>
 
 app
-  div(data-is='hoge')
   div(data-is='spat-nav')
   nav.tabs
     div.tab-items
@@ -93,10 +93,10 @@ app
 
 home
   navigator(title='ホーム')
-  div.posts
-    div.post(each='{post, index in posts}', onclick='{spat.nav.goto}', href='post')
-      div {index}. {post.title}
-    spat-scroll-loader(onload='{load}') loader...
+  spat-list.posts(onload='{load}')
+    div.post(each='{post, index in items}') {index}. {post.title}
+    div.loading(if='{isMore}') loading...
+
   style(scoped, type='less').
     :scope {
       background-color: white;
@@ -111,6 +111,10 @@ home
           height: 80px;
           border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
+
+        .loading {
+          text-align: center;
+        }
       }
     }
   script.
@@ -120,22 +124,25 @@ home
     this.posts = [];
 
     this.on('mount', function() {
-      this.tags['spat-scroll-loader'].load();
+      // this.tags['spat-scroll-loader'].load();
+
+      this.tags['spat-list'].load();
     });
 
-    this.load = function(page) {
-      return fetch(ref + '?page=' + page).then(function(res) {
+    this.load = function(page, list) {
+      fetch(ref + '?page=' + page).then(function(res) {
         return res.json();
       }).then(function(json) {
         var num = 16;
-        var posts = json.splice(num*page, num);
-        if (posts.length <= 0) {
-          self.tags['spat-scroll-loader'].hide()
+        var items = json.splice(num*page, num);
+        
+        if (items.length > 0) {
+          list.addItems(items);
+          list.unlock();
         }
         else {
-          Array.prototype.push.apply(self.posts, posts);
+          list.more(false);
         }
-        self.update();
       });
     };
 
@@ -210,7 +217,7 @@ navigator
       display: flex;
       justify-content: center;
       align-items: center;
-      line-height: 44px;
+      height: 44px;
       background-color: white;
       text-align: center;
       background-color: hsl(0, 0%, 96%);

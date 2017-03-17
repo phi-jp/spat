@@ -23,6 +23,62 @@ riot.tag2('spat-modal-actionsheet', '<div ref="modal" class="modal"> <div class=
     };
 });
 
+riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{display:block}', '', function(opts) {
+    var self = this;
+
+    this.on('mount', function() {
+      this.init();
+      this.root.addEventListener('scroll', function(e) {
+        var max = e.target.scrollHeight - e.target.offsetHeight-1;
+        if (e.target.scrollTop >= max) {
+          self.load();
+        }
+      }, false);
+    });
+
+    this.init = function() {
+      this.items = [];
+      this.page = 1;
+      this.isLock = false;
+      this.isMore = true;
+    };
+
+    this.load = function() {
+
+      if (this.isLock) return;
+
+      this.lock();
+
+      if (this.opts.onload) {
+        this.opts.onload(this.page++, this);
+      }
+    };
+
+    this.addItem = function(item) {
+      this.items.push(item);
+      this.update();
+    };
+
+    this.addItems = function(items) {
+      Array.prototype.push.apply(self.items, items);
+      this.update();
+    };
+
+    this.lock = function() {
+      this.isLock = true;
+      this.update();
+    };
+    this.unlock = function() {
+      this.isLock = false;
+      this.update()
+    };
+
+    this.more = function(flag) {
+      this.isMore = flag;
+      this.update();
+    };
+});
+
 riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;transform:translate3d(0, 0, 0);top:0;right:0;bottom:0;left:0;display:block;z-index:9999} spat-modal modal-content,[data-is="spat-modal"] modal-content{position:absolute;display:block;left:0;right:0;top:0;bottom:0}@keyframes modal-left-in{ 0%{transform:translateX(-200px);opacity:0} 100%{transform:translateX(0);opacity:1}}@keyframes modal-left-out{ 0%{transform:translateX(0);opacity:1} 100%{transform:translateX(-200px);opacity:0}}@keyframes modal-right-in{ 0%{transform:translateX(200px);opacity:0} 100%{transform:translateX(0);opacity:1}}@keyframes modal-right-out{ 0%{transform:translateX(0);opacity:1} 100%{transform:translateX(200px);opacity:0}}@keyframes modal-bottom-in{ 0%{transform:translateY(200px);opacity:0} 100%{transform:translateY(0);opacity:1}}@keyframes modal-bottom-out{ 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(200px);opacity:0}}@keyframes modal-scale-in{ 0%{transform:scale(1.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes modal-scale-out{ 0%{transform:scale(1);opacity:1} 100%{transform:scale(.5);opacity:0}}', 'show="{visible}"', function(opts) {
     var self = this;
 
