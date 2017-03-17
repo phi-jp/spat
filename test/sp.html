@@ -94,17 +94,16 @@ app
 home
   navigator(title='ホーム')
   div.posts
-    div(data-is='hoge')
-    div.post(each='{posts}', onclick='{spat.nav.goto}', href='post')
-      div {title}
+    div.post(each='{post, index in posts}', onclick='{spat.nav.goto}', href='post')
+      div {index}. {post.title}
     spat-scroll-loader(onload='{load}') loader...
   style(scoped, type='less').
     :scope {
       background-color: white;
 
       .posts {
-        height: ~'calc(100% - 50px)';
-        overflow: scroll;
+        height: ~'calc(100% - 44px)';
+        overflow: auto;
         .post {
           display: flex;
           align-items: center;
@@ -118,15 +117,24 @@ home
     var self = this;
     var ref = 'http://jsonplaceholder.typicode.com/posts';
 
+    this.posts = [];
+
     this.on('mount', function() {
       this.tags['spat-scroll-loader'].load();
     });
 
     this.load = function(page) {
-      return fetch(ref).then(function(res) {
+      return fetch(ref + '?page=' + page).then(function(res) {
         return res.json();
       }).then(function(json) {
-        self.posts = json.splice(10*page, 10*(page+1));
+        var num = 16;
+        var posts = json.splice(num*page, num);
+        if (posts.length <= 0) {
+          self.tags['spat-scroll-loader'].hide()
+        }
+        else {
+          Array.prototype.push.apply(self.posts, posts);
+        }
         self.update();
       });
     };
