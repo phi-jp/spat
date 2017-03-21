@@ -46,14 +46,14 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
 
     this.load = function() {
 
-      if (this.isLock) return;
+      if (this.isLock) return Promise.resolve();
 
       this.lock();
 
       if (this.opts.onload) {
-        this.opts.onload(this.page++, this);
+        return this.opts.onload(this.page++, this);
       }
-      return this;
+      return Promise.resolve();
     };
 
     this.addItem = function(item) {
@@ -191,6 +191,7 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
 
     this._back = false;
     this._locked = false;
+    this._autoRender = true;
 
     this.lock = function(color) {
       this._locked = true;
@@ -214,6 +215,7 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
       if(!page || prevPage.dataset.is === tagName) {
         page = document.createElement('div');
         page.classList.add('spat-page');
+        page.classList.add('spat-hide');
         this.refs.pages.appendChild(page);
         riot.mount(page, tagName);
       }
@@ -226,6 +228,9 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
         }
       };
 
+      this.lock();
+
+      var d = Date.now();
       var e = {
         prevPage: prevPage,
         currentPage: page,
@@ -234,11 +239,23 @@ riot.tag2('spat-nav', '<div ref="pages" class="spat-pages"></div> <div if="{_loc
 
         opts: opts,
         back: self._back,
+        render: function() {
+          if (!self._autoRender) {
+            self._swap(page, prevPage);
+            console.log(Date.now() - d);
+          }
+        },
       };
-      page.classList.remove('spat-hide');
       page._tag.trigger('show', e);
 
-      this.lock();
+      if (this._autoRender) {
+        this._swap(page, prevPage);
+      }
+    };
+
+    this._swap = function(page, prevPage) {
+
+      page.classList.remove('spat-hide');
 
       swapAnimation(page, prevPage, this._back).then(function() {
 

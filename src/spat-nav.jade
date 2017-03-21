@@ -74,6 +74,7 @@ spat-nav
 
     this._back = false;
     this._locked = false;
+    this._autoRender = true;
 
     this.lock = function(color) {
       this._locked = true;
@@ -98,6 +99,7 @@ spat-nav
       if(!page || prevPage.dataset.is === tagName) {
         page = document.createElement('div');
         page.classList.add('spat-page');
+        page.classList.add('spat-hide');
         this.refs.pages.appendChild(page);
         riot.mount(page, tagName);
       }
@@ -110,7 +112,11 @@ spat-nav
         }
       };
 
+      // 画面をロック
+      this.lock();
+
       // イベントオブジェクトを作成
+      var d = Date.now();
       var e = {
         prevPage: prevPage,
         currentPage: page,
@@ -119,12 +125,23 @@ spat-nav
         //- opts: spat.nav.opts || {},
         opts: opts,
         back: self._back,
+        render: function() {
+          if (!self._autoRender) {
+            self._swap(page, prevPage);
+            console.log(Date.now() - d);
+          }
+        },
       };
-      page.classList.remove('spat-hide');
       page._tag.trigger('show', e);
 
-      // 画面をロック
-      this.lock();
+      if (this._autoRender) {
+        this._swap(page, prevPage);
+      }
+    };
+
+    this._swap = function(page, prevPage) {
+
+      page.classList.remove('spat-hide');
 
       // swap animation
       swapAnimation(page, prevPage, this._back).then(function() {
@@ -154,7 +171,6 @@ spat-nav
         e.preventDefault();
       }
 
-      //- spat.nav.opts = opts;
       route(path);
     };
     this.back = function(index, opts) {
@@ -166,10 +182,6 @@ spat-nav
         history.back();
       }
     };
-
-    //- route(function(tagName) {
-    //-   self.swap.apply(self, arguments);
-    //- });
 
     window.spat.nav = this;
 

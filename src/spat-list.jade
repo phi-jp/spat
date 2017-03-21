@@ -32,16 +32,17 @@ spat-list
 
     this.load = function() {
       // ロック中は何もしない
-      if (this.isLock) return;
+      if (this.isLock) return Promise.resolve();
 
       // ロック
       this.lock();
 
       // 追加ロード
       if (this.opts.onload) {
-        this.opts.onload(this.page++, this);
+        return this.opts.onload(this.page++, this);
       }
-      return this;
+      
+      return Promise.resolve();
     };
 
     this.addItem = function(item) {
