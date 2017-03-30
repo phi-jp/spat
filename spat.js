@@ -34,7 +34,7 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
           self.load();
         }
 
-        if (e.target.scrollTop < -40) {
+        if (e.target.scrollTop < -85) {
           self.refresh();
         }
       }, false);
