@@ -23,7 +23,7 @@ riot.tag2('spat-modal-actionsheet', '<div class="modal" ref="modal"> <div class=
     };
 });
 
-riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{display:block;overflow:scroll;-webkit-overflow-scrolling:touch;overflow-scrolling:touch;height:100%}', '', function(opts) {
+riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{display:block;overflow:scroll;-webkit-overflow-scrolling:touch;overflow-scrolling:touch;height:100%;will-change:transform}', 'onmousedown="{_dragstart}" onmousemove="{_dragmove}" onmouseup="{_dragend}" riot-style="transform: translateY({_y}px);"', function(opts) {
     var self = this;
 
     this.on('mount', function() {
@@ -33,7 +33,7 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
         if (e.target.scrollTop >= max) {
           self.load();
         }
-        if (e.target.scrollTop <= 0) {
+        if (e.target.scrollTop < 0) {
           self.refresh();
         }
       }, false);
@@ -44,6 +44,7 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
       this.page = 1;
       this.isLock = false;
       this.isMore = true;
+
       return this;
     };
 
@@ -91,6 +92,26 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
       this.isMore = flag;
       this.update();
       return this;
+    };
+
+    this._dragstart = function(e) {
+      this._offsetY = e.clientY;
+      console.log(this._offsetY);
+    };
+
+    this._dragmove = function(e) {
+      if (this._offsetY !== null) {
+        this._y = e.clientY - this._offsetY;
+      }
+    };
+
+    this._dragend = function() {
+      if (this._offsetY !== null && this._y > 50) {
+          this.refresh();
+      }
+
+      this._y = 0;
+      this._offsetY = null;
     };
 });
 

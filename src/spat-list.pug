@@ -1,4 +1,4 @@
-spat-list
+spat-list(onmousedown='{_dragstart}', onmousemove='{_dragmove}', onmouseup='{_dragend}', style='transform: translateY({_y}px)')
   #{'yield'}
 
   style(scoped, type='less').
@@ -8,9 +8,11 @@ spat-list
       -webkit-overflow-scrolling: touch;
       overflow-scrolling: touch;
       height: 100%;
+      will-change: transform;
     }
   script.
     var self = this;
+
 
     this.on('mount', function() {
       this.init();
@@ -19,7 +21,7 @@ spat-list
         if (e.target.scrollTop >= max) {
           self.load();
         }
-        if (e.target.scrollTop <= 0) {
+        if (e.target.scrollTop < 0) {
           self.refresh();
         }
       }, false);
@@ -30,6 +32,7 @@ spat-list
       this.page = 1;
       this.isLock = false;
       this.isMore = true;
+
       return this;
     };
 
@@ -79,4 +82,24 @@ spat-list
       this.isMore = flag;
       this.update();
       return this;
+    };
+
+    this._dragstart = function(e) {
+      this._offsetY = e.clientY;
+      console.log(this._offsetY);
+    };
+
+    this._dragmove = function(e) {
+      if (this._offsetY !== null) {
+        this._y = e.clientY - this._offsetY;
+      }
+    };
+
+    this._dragend = function() {
+      if (this._offsetY !== null && this._y > 50) {
+          this.refresh();
+      }
+
+      this._y = 0;
+      this._offsetY = null;
     };
