@@ -19,6 +19,9 @@ spat-list
         if (e.target.scrollTop >= max) {
           self.load();
         }
+        if (e.target.scrollTop <= 0) {
+          self.refresh();
+        }
       }, false);
     });
 
@@ -43,6 +46,10 @@ spat-list
       }
       
       return Promise.resolve();
+    };
+
+    this.refresh = function() {
+      this.init().load();
     };
 
     this.addItem = function(item) {

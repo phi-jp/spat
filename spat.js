@@ -33,6 +33,9 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
         if (e.target.scrollTop >= max) {
           self.load();
         }
+        if (e.target.scrollTop <= 0) {
+          self.refresh();
+        }
       }, false);
     });
 
@@ -53,7 +56,12 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
       if (this.opts.onload) {
         return this.opts.onload(this.page++, this);
       }
+
       return Promise.resolve();
+    };
+
+    this.refresh = function() {
+      this.init().load();
     };
 
     this.addItem = function(item) {
