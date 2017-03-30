@@ -21,7 +21,8 @@ spat-list(onmousedown='{_dragstart}', onmousemove='{_dragmove}', onmouseup='{_dr
         if (e.target.scrollTop >= max) {
           self.load();
         }
-        if (e.target.scrollTop < 0) {
+        // pull to refresh for ios
+        if (e.target.scrollTop < -40) {
           self.refresh();
         }
       }, false);
@@ -85,8 +86,10 @@ spat-list(onmousedown='{_dragstart}', onmousemove='{_dragmove}', onmouseup='{_dr
     };
 
     this._dragstart = function(e) {
-      this._offsetY = e.clientY;
-      console.log(this._offsetY);
+      // 一番上のときのみ有効にする
+      if (this.root.scrollTop <= 0) {
+        this._offsetY = e.clientY;
+      }
     };
 
     this._dragmove = function(e) {

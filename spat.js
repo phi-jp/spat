@@ -33,7 +33,8 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
         if (e.target.scrollTop >= max) {
           self.load();
         }
-        if (e.target.scrollTop < 0) {
+
+        if (e.target.scrollTop < -40) {
           self.refresh();
         }
       }, false);
@@ -95,8 +96,10 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
     };
 
     this._dragstart = function(e) {
-      this._offsetY = e.clientY;
-      console.log(this._offsetY);
+
+      if (this.root.scrollTop <= 0) {
+        this._offsetY = e.clientY;
+      }
     };
 
     this._dragmove = function(e) {
