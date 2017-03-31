@@ -123,7 +123,7 @@ spat-nav
         query: route.query(),
         args: Array.prototype.slice.call(arguments),
         //- opts: spat.nav.opts || {},
-        opts: opts,
+        opts: opts || {},
         back: self._back,
         render: function() {
           if (!self._autoRender) {

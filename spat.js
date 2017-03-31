@@ -269,7 +269,7 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
         query: route.query(),
         args: Array.prototype.slice.call(arguments),
 
-        opts: opts,
+        opts: opts || {},
         back: self._back,
         render: function() {
           if (!self._autoRender) {
