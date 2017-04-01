@@ -242,12 +242,15 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
     this.swap = function(tagName, opts) {
       var prevPage = this.currentPage;
 
-      var page = this.refs.pages.querySelector('[data-is=' + tagName + ']');
+      var pageId = location.href.replace(location.origin, '');
 
-      if(!page || prevPage.dataset.is === tagName) {
+      var page = this.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
+
+      if(page === null) {
         page = document.createElement('div');
         page.classList.add('spat-page');
         page.classList.add('spat-hide');
+        page.setAttribute('data-page-id', pageId);
         this.refs.pages.appendChild(page);
         riot.mount(page, tagName);
       }

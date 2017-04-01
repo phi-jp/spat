@@ -93,13 +93,17 @@ spat-nav
     this.swap = function(tagName, opts) {
       var prevPage = this.currentPage;
 
+      // 現在の url を page id としてキャッシュ判定する
+      var pageId = location.href.replace(location.origin, '');
       // マウント済みのページを取得
-      var page = this.refs.pages.querySelector('[data-is=' + tagName + ']');
+      var page = this.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
+
       // まだマウントされていなければ新たにマウントする
-      if(!page || prevPage.dataset.is === tagName) {
+      if(page === null) {
         page = document.createElement('div');
         page.classList.add('spat-page');
         page.classList.add('spat-hide');
+        page.setAttribute('data-page-id', pageId);
         this.refs.pages.appendChild(page);
         riot.mount(page, tagName);
       }
