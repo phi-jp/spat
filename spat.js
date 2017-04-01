@@ -246,6 +246,8 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
 
       var page = this.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
 
+      var cached = false;
+
       if(page === null) {
         page = document.createElement('div');
         page.classList.add('spat-page');
@@ -255,6 +257,7 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
         riot.mount(page, tagName);
       }
       else {
+        cached = true;
         if (!this._back) {
 
           var parent = page.parentNode;
@@ -274,6 +277,7 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
 
         opts: opts || {},
         back: self._back,
+        cached: cached,
         render: function() {
           if (!self._autoRender) {
             self._swap(page, prevPage);

@@ -97,6 +97,8 @@ spat-nav
       var pageId = location.href.replace(location.origin, '');
       // マウント済みのページを取得
       var page = this.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
+      // キャッシュフラグ
+      var cached = false;
 
       // まだマウントされていなければ新たにマウントする
       if(page === null) {
@@ -108,6 +110,7 @@ spat-nav
         riot.mount(page, tagName);
       }
       else {
+        cached = true;
         if (!this._back) {
           // 最前面に移動
           var parent = page.parentNode;
@@ -129,6 +132,7 @@ spat-nav
         //- opts: spat.nav.opts || {},
         opts: opts || {},
         back: self._back,
+        cached: cached,
         render: function() {
           if (!self._autoRender) {
             self._swap(page, prevPage);
