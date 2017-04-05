@@ -192,6 +192,8 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
       var animation = modal.root.getAttribute('spat-animation') || 'scale';
       var modalElm = modal.refs.modal;
 
+      modal.trigger('close');
+
       if (animation) {
         modalElm.style.animationName = 'modal-' + animation + '-out';
         modalElm.style.animationDuration = '256ms';
