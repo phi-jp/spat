@@ -181,6 +181,7 @@ spat-nav
 
       route(path);
     };
+    
     this.back = function(index, opts) {
       self._back = true;
       if (typeof index === 'number') {
@@ -189,6 +190,14 @@ spat-nav
       else {
         history.back();
       }
+    };
+
+    this.clearCache = function() {
+      this.currentPage = null;
+      this.prevPage = null;
+      this.refs.pages.innerHTML = '';
+
+      return this;
     };
 
     window.spat.nav = this;

@@ -337,6 +337,14 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
       }
     };
 
+    this.clearCache = function() {
+      this.currentPage = null;
+      this.prevPage = null;
+      this.refs.pages.innerHTML = '';
+
+      return this;
+    };
+
     window.spat.nav = this;
 
     var swapAnimation = function(next, prev, back) {
