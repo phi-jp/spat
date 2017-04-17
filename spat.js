@@ -181,6 +181,7 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
         modalElm.style.animationName = 'modal-' + animation + '-in';
         modalElm.style.animationDuration = '256ms';
         modalElm.style.animationPlayState = 'running';
+        modalElm.style.animationFillMode = 'forwards';
 
         onceEvent(modalElm, 'animationend', function(e) {
           modalElm.style.animationPlayState = 'paused';
@@ -327,6 +328,7 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
 
       route(path);
     };
+
     this.back = function(index, opts) {
       self._back = true;
       if (typeof index === 'number') {

@@ -120,6 +120,7 @@ spat-modal(show='{visible}')
         modalElm.style.animationName = 'modal-' + animation + '-in';
         modalElm.style.animationDuration = '256ms';
         modalElm.style.animationPlayState = 'running';
+        modalElm.style.animationFillMode = 'forwards';
 
         onceEvent(modalElm, 'animationend', function(e) {
           modalElm.style.animationPlayState = 'paused';
