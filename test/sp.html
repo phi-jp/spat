@@ -15,7 +15,7 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jade/1.11.0/jade.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/3.1.0/riot+compiler.js'></script>
     <!-- <script src="https://cdn.jsdelivr.net/riot-route/3.1.0/route.js"></script> -->
-    <script src='https://cdn.rawgit.com/phi-jp/routeful/4d2fdb52329a74791bbf5e2cc65b1d82ed2a35a2/routeful.js'></script>
+    <script src='https://cdn.rawgit.com/phi-jp/routeful/02877522e6847dc41d5d1a79c8ad8f6b0398d14b/routeful.js'></script>
 
     <style>
     * {
@@ -85,18 +85,19 @@ app
 
   script.
     this.on('mount', function() {
-      var route = Routeful();
-      route.base('#');
-      route.on('/:tagName/:id', function(res) {
+      var routeful = Routeful();
+      routeful.base('#');
+      routeful.root(location.pathname);
+      routeful.on('/:tagName/:id', function(res) {
         spat.nav.swap(res.params.tagName, res.params);
       });
-      route.on('/:tagName', function(res) {
+      routeful.on('/:tagName', function(res) {
         spat.nav.swap(res.params.tagName);
       });
-      route.on('*', function(res) {
+      routeful.on('*', function(res) {
         spat.nav.swap('home');
       });
-      route.start(true);
+      routeful.start(true);
 
       // route(function(tagName) {
       //   arguments[0] = arguments[0] || 'home';
