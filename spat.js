@@ -118,6 +118,14 @@ riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{displ
     };
 });
 
+riot.tag2('spat-marked', '', 'spat-marked,[data-is="spat-marked"]{display:block}', '', function(opts) {
+    this.on('mount', function() {
+      if (!window.marked) {
+        console.error('marked を読み込んでないと使えません!');
+      }
+    });
+});
+
 riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;transform:translate3d(0, 0, 0);top:0;right:0;bottom:0;left:0;display:block;z-index:9999} spat-modal modal-content,[data-is="spat-modal"] modal-content{position:absolute;display:block;left:0;right:0;top:0;bottom:0}@keyframes modal-left-in{ 0%{transform:translateX(-200px);opacity:0} 100%{transform:translateX(0);opacity:1}}@keyframes modal-left-out{ 0%{transform:translateX(0);opacity:1} 100%{transform:translateX(-200px);opacity:0}}@keyframes modal-right-in{ 0%{transform:translateX(200px);opacity:0} 100%{transform:translateX(0);opacity:1}}@keyframes modal-right-out{ 0%{transform:translateX(0);opacity:1} 100%{transform:translateX(200px);opacity:0}}@keyframes modal-bottom-in{ 0%{transform:translateY(200px);opacity:0} 100%{transform:translateY(0);opacity:1}}@keyframes modal-bottom-out{ 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(200px);opacity:0}}@keyframes modal-scale-in{ 0%{transform:scale(1.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes modal-scale-out{ 0%{transform:scale(1);opacity:1} 100%{transform:scale(.5);opacity:0}}', 'show="{visible}"', function(opts) {
     var self = this;
 
@@ -221,7 +229,7 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
 
 });
 
-riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="spat-lock" if="{_locked}" ref="lock"></div>', 'spat-nav,[data-is="spat-nav"]{position:relative;display:block;width:100%;height:100%} spat-nav .spat-pages,[data-is="spat-nav"] .spat-pages{position:absolute;width:100%;height:100%} spat-nav .spat-pages .spat-page,[data-is="spat-nav"] .spat-pages .spat-page{position:absolute;width:100%;height:100%;backface-visibility:hidden;animation-fill-mode:forwards;overflow:scroll;-webkit-overflow-scrolling:touch;overflow-scrolling:touch} spat-nav .spat-pages .spat-page.spat-hide,[data-is="spat-nav"] .spat-pages .spat-page.spat-hide{display:none} spat-nav .spat-lock,[data-is="spat-nav"] .spat-lock{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9999;background-color:transparent}@keyframes slide-in{ 0%{transform:translate(250px, 0);opacity:0} 100%{transform:translate(0, 0);opacity:1}}@keyframes slide-out{ 0%{opacity:1} 100%{opacity:.8}}@keyframes scale-in{ 0%{transform:scale(.5);opacity:0} 0%{transform:scale(.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes scale-out{ 0%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0} 100%{transform:scale(1.5);opacity:0}}@keyframes rotate-in{ 0%{transform:perspective(800px) rotateY(180deg);opacity:0} 100%{transform:perspective(800px) rotateY(0deg);opacity:1}}@keyframes rotate-out{ 0%{transform:perspective(800px) rotateY(0deg);opacity:1} 100%{transform:perspective(800px) rotateY(-180deg);opacity:0}}', '', function(opts) {
+riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="spat-lock" show="{_locked}" ref="lock"></div>', 'spat-nav,[data-is="spat-nav"]{position:relative;display:block;width:100%;height:100%} spat-nav .spat-pages,[data-is="spat-nav"] .spat-pages{position:absolute;width:100%;height:100%} spat-nav .spat-pages .spat-page,[data-is="spat-nav"] .spat-pages .spat-page{position:absolute;width:100%;height:100%;backface-visibility:hidden;animation-fill-mode:forwards;overflow:scroll;-webkit-overflow-scrolling:touch;overflow-scrolling:touch} spat-nav .spat-pages .spat-page.spat-hide,[data-is="spat-nav"] .spat-pages .spat-page.spat-hide{display:none} spat-nav .spat-lock,[data-is="spat-nav"] .spat-lock{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9999;background-color:transparent}@keyframes slide-in{ 0%{transform:translate(250px, 0);opacity:0} 100%{transform:translate(0, 0);opacity:1}}@keyframes slide-out{ 0%{opacity:1} 100%{opacity:.8}}@keyframes scale-in{ 0%{transform:scale(.5);opacity:0} 0%{transform:scale(.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes scale-out{ 0%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0} 100%{transform:scale(1.5);opacity:0}}@keyframes rotate-in{ 0%{transform:perspective(800px) rotateY(180deg);opacity:0} 100%{transform:perspective(800px) rotateY(0deg);opacity:1}}@keyframes rotate-out{ 0%{transform:perspective(800px) rotateY(0deg);opacity:1} 100%{transform:perspective(800px) rotateY(-180deg);opacity:0}}', '', function(opts) {
     var self = this;
 
     this._back = false;
@@ -275,7 +283,7 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
       var e = {
         prevPage: prevPage,
         currentPage: page,
-        query: route.query(),
+        query: this.query(),
         args: Array.prototype.slice.call(arguments),
 
         opts: opts || {},
@@ -316,27 +324,21 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
       delete spat.nav.opts;
     };
 
-    this.goto = function(e, opts) {
-      var path = '';
-      if (typeof e === 'string') {
-        path = e;
-      }
-      else {
-        path = e.currentTarget.getAttribute('href');
-        e.preventDefault();
-      }
-
-      route(path);
-    };
-
     this.back = function(index, opts) {
       self._back = true;
+
       if (typeof index === 'number') {
         history.go(-index);
       }
       else {
         history.back();
       }
+    };
+
+    this.query = function() {
+      var q = {};
+      location.search.replace(/[?&](.+?)=([^&]*)/g, function(m, key, value) { q[key] = value; });
+      return q;
     };
 
     this.clearCache = function() {
@@ -351,7 +353,6 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
 
     var swapAnimation = function(next, prev, back) {
       var animation = (back !== true) ? next.getAttribute('spat-animation') : prev.getAttribute('spat-animation');
-
       animation = animation || self.animation;
 
       if (!animation) {
@@ -399,6 +400,12 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
       };
       elm.addEventListener(evtName, temp, false);
     };
+});
+
+riot.tag2('spat-raw', '', 'spat-raw,[data-is="spat-raw"]{display:block}', '', function(opts) {
+    this.on('update', function() {
+      this.root.innerHTML = opts.html;
+    });
 });
 
 riot.tag2('spat-scroll-loader', '<div class="loader" if="{_show}"><span>loading...</span></div>', 'spat-scroll-loader,[data-is="spat-scroll-loader"]{display:block} spat-scroll-loader .loader,[data-is="spat-scroll-loader"] .loader{display:flex;justify-content:center;align-items:center;height:44px} spat-scroll-loader .loader [class^=icon],[data-is="spat-scroll-loader"] .loader [class^=icon]{display:block;font-size:22px}@keyframes scroll-loader-spin{ from{transform:rotate(0deg)} to{transform:rotate(360deg)}}', '', function(opts) {
@@ -473,191 +480,4 @@ riot.tag2('spat-toast-item', '<span>{opts.text}</span>', 'spat-toast-item,[data-
         });
       }, timeout);
     });
-});
-
-riot.tag2('spat-nav-old', '<div class="spat-contents" name="contents"></div> <div class="spat-lock" if="{lock}"></div>', 'spat-nav-old,[data-is="spat-nav-old"]{display:block;width:100%;height:100%} spat-nav-old .spat-content,[data-is="spat-nav-old"] .spat-content{position:absolute;top:0;right:0;bottom:0;left:0;display:block;width:100%;height:100%;overflow:auto;-webkit-overflow-scrolling:touch;backface-visibility:hidden;z-index:5;animation-duration:300ms;animation-timing-function:ease-in-out} spat-nav-old .spat-content.spat-hide,[data-is="spat-nav-old"] .spat-content.spat-hide{display:none} spat-nav-old .spat-lock,[data-is="spat-nav-old"] .spat-lock{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9999;background-color:rgba(255,0,0,0.2);background-color:transparent}@keyframes slide-in{ 0%{transform:translate(250px, 0);opacity:0} 100%{transform:translate(0, 0);opacity:1}}@keyframes slide-out{ 0%{opacity:1} 100%{opacity:.8}}@keyframes scale-in{ 0%{transform:scale(.5);opacity:0} 0%{transform:scale(.5);opacity:0} 100%{transform:scale(1);opacity:1}}@keyframes scale-out{ 0%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0} 100%{transform:scale(1.5);opacity:0}}@keyframes rotate-in{ 0%{transform:perspective(800px) rotateY(180deg);opacity:0} 100%{transform:perspective(800px) rotateY(0deg);opacity:1}}@keyframes rotate-out{ 0%{transform:perspective(800px) rotateY(0deg);opacity:1} 100%{transform:perspective(800px) rotateY(-180deg);opacity:0}}', '', function(opts) {
-    var self = this;
-    this.lock = false;
-    this.stack = [];
-    this.animationMap = {
-      item: {
-        name: 'scale',
-      },
-    };
-    this.tagName = function(tagName) {
-      return tagName || 'home';
-    };
-
-    this.on('mount', function() {
-
-    });
-
-    this.on('updated', function() {
-      riot.route.start(true);
-    });
-
-    this.back = function() {
-      self._back = true;
-      history.back();
-    };
-
-    this.replace = function() {
-
-    };
-
-    var setAnimation = function(elm, name, duration, direction) {
-      elm.style.animationDuration = duration || '';
-      elm.style.animationDirection = direction || '';
-      elm.style.animationName = name || '';
-    };
-
-    var onceEvent = function(elm, evtName, fn) {
-      var temp = function() {
-        elm.removeEventListener(evtName, temp, false);
-        fn();
-      };
-      elm.addEventListener(evtName, temp, false);
-    };
-
-    this._swap = function(next, prev, back, done) {
-
-      var animation = (back !== true) ? next._tag.animation : prev._tag.animation;
-
-      if (!animation || !animation.name) {
-        done();
-        return ;
-      }
-
-      var time = animation.time || 500;
-
-      if (!back) {
-        setAnimation(next, animation.name + '-in', time);
-      }
-      else {
-        setAnimation(next, animation.name + '-out', time, 'reverse');
-      }
-
-      onceEvent(next, 'animationend', function() {
-        setAnimation(next);
-      });
-
-      if (prev) {
-        if (!back) {
-          setAnimation(prev, animation.name + '-out', time);
-        }
-        else {
-          setAnimation(prev, animation.name + '-in', time, 'reverse');
-        }
-
-        onceEvent(prev, 'animationend', function() {
-          setAnimation(prev);
-          done();
-        });
-      }
-      else {
-        done();
-      }
-    };
-
-    riot.route(function(tagName) {
-      tagName = self.tagName.apply(self, arguments);
-
-      var prev = self.currentContent;
-
-      var e = {
-        prevTag: prev ? prev._tag : null,
-        opts: riot.spat.opts || {},
-        hashes: location.hash.split('?')[0].split('/'),
-        query: riot.route.query(),
-        args: Array.prototype.slice.call(arguments),
-        back: self._back,
-      };
-
-      if (prev && prev.getAttribute('riot-tag') === tagName) {
-        prev._tag.trigger('active', e);
-        return ;
-      }
-
-      var content = self.root.getElementsByTagName(tagName)[0];
-      if (!content) {
-        content = document.createElement(tagName);
-        content.classList.add('spat-content');
-        self.contents.appendChild(content);
-        riot.mount(tagName, tagName, {
-          app: self,
-        });
-      }
-      else {
-        if (!self._back) {
-
-          var parent = content.parentNode;
-          parent.removeChild(content);
-          parent.appendChild(content);
-        }
-      }
-
-      if (prev) {
-        prev._tag.trigger('hide', e);
-      }
-
-      content._tag.trigger('active', e);
-
-      self.lock = true;
-      self.update();
-
-      self._swap(content, prev, self._back, function() {
-        if (prev) {
-          if (prev._tag.cache !== false) {
-            prev.classList.add('spat-hide');
-          }
-          else {
-            var parent = prev.parentNode;
-            parent.removeChild(prev);
-          }
-        }
-
-        self.lock = false;
-        self.update();
-      });
-
-      self.trigger('swap', {
-        next: content,
-        prev: prev,
-        back: self._back,
-      });
-
-      content.classList.remove('spat-hide');
-      self._back = false;
-
-      self.prev = prev;
-      self.currentContent = content;
-      self.stack.push(prev);
-
-      delete riot.spat.opts;
-    });
-
-    riot.spat = {
-      goto: function(e, opts) {
-        var path = '';
-        if (typeof e === 'string') {
-          path = e;
-        }
-        else {
-          path = e.currentTarget.getAttribute('href');
-        }
-        riot.spat.opts = opts;
-        riot.route(path);
-      },
-      back: function(index, opts) {
-        self._back = true;
-
-        riot.spat.opts = opts;
-        if (typeof index === 'number') {
-          history.go(-index);
-        }
-        else {
-          history.back();
-        }
-      },
-    };
 });

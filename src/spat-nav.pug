@@ -1,6 +1,6 @@
 spat-nav
   div.spat-pages(ref='pages')
-  div.spat-lock(if='{_locked}', ref='lock')
+  div.spat-lock(show='{_locked}', ref='lock')
 
   style(scoped, type='less').
     :scope {
@@ -127,7 +127,7 @@ spat-nav
       var e = {
         prevPage: prevPage,
         currentPage: page,
-        query: route.query(),
+        query: this.query(),
         args: Array.prototype.slice.call(arguments),
         //- opts: spat.nav.opts || {},
         opts: opts || {},
@@ -169,27 +169,21 @@ spat-nav
       delete spat.nav.opts;
     };
 
-    this.goto = function(e, opts) {
-      var path = '';
-      if (typeof e === 'string') {
-        path = e;
-      }
-      else {
-        path = e.currentTarget.getAttribute('href');
-        e.preventDefault();
-      }
-
-      route(path);
-    };
-    
     this.back = function(index, opts) {
       self._back = true;
+
       if (typeof index === 'number') {
         history.go(-index);
       }
       else {
         history.back();
       }
+    };
+
+    this.query = function() {
+      var q = {};
+      location.search.replace(/[?&](.+?)=([^&]*)/g, function(m, key, value) { q[key] = value; });
+      return q;
     };
 
     this.clearCache = function() {
@@ -207,7 +201,6 @@ spat-nav
      */
     var swapAnimation = function(next, prev, back) {
       var animation = (back !== true) ? next.getAttribute('spat-animation') : prev.getAttribute('spat-animation');
-
       animation = animation || self.animation;
 
       if (!animation) {

@@ -14,7 +14,8 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jade/1.11.0/jade.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/3.1.0/riot+compiler.js'></script>
-    <script src="https://cdn.jsdelivr.net/riot-route/3.1.0/route.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/riot-route/3.1.0/route.js"></script> -->
+    <script src='https://cdn.rawgit.com/phi-jp/routeful/1118aaba15c25be7df2ff0e47146a694f44c1e1c/routeful.js'></script>
 
     <style>
     * {
@@ -84,11 +85,24 @@ app
 
   script.
     this.on('mount', function() {
-      route(function(tagName) {
-        arguments[0] = arguments[0] || 'home';
-        spat.nav.swap.apply(spat.nav, arguments);
+      var route = Routeful();
+      route.base('#');
+      route.on('/:tagName/:id', function(res) {
+        spat.nav.swap(res.params.tagName, res.params);
+      });
+      route.on('/:tagName', function(res) {
+        spat.nav.swap(res.params.tagName);
+      });
+      route.on('*', function(res) {
+        spat.nav.swap('home');
       });
       route.start(true);
+
+      // route(function(tagName) {
+      //   arguments[0] = arguments[0] || 'home';
+      //   spat.nav.swap.apply(spat.nav, arguments);
+      // });
+      // route.start(true);
     });
 
 home
@@ -193,7 +207,7 @@ mypage
 
 items(spat-animation='{animation}')
   navigator(title='Items')
-  div.title item: {id}
+  div.title item: {itemId}
   a(href='', onclick='{spat.nav.back}') back
   style(scoped, type='less').
     :scope {
@@ -204,7 +218,7 @@ items(spat-animation='{animation}')
   script.
     this.animation = 'slide';
     this.on('show', function(e) {
-      this.id = e.args[1];
+      this.itemId = e.opts.id;
       this.update();
     });
 
