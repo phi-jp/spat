@@ -72,6 +72,8 @@ spat-nav
   script.
     var self = this;
 
+    this.animation = '';
+    this.animationDuration = '256ms';
     this._back = false;
     this._locked = false;
     this._autoRender = true;
@@ -211,14 +213,13 @@ spat-nav
         var direction = '';
         var nextAnimation = animation + '-in';
         var prevAnimation = animation + '-out'
-        var duration = '256ms';
       }
       else {
         var direction = 'reverse';
         var nextAnimation = animation + '-out';
         var prevAnimation = animation + '-in'
-        var duration = '256ms';
       }
+      var duration = self.animationDuration || '256ms';
 
       return new Promise(function(resolve) {
         // 今のページをアニメーション
