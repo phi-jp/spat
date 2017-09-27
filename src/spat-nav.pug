@@ -221,7 +221,7 @@ spat-nav
         var nextAnimation = animation + '-out';
         var prevAnimation = animation + '-in'
       }
-      var duration = self.animationDuration || '256ms';
+      var duration = self.animationDuration ? self.animationDuration + 'ms' : '256ms';
 
       return new Promise(function(resolve) {
         // 今のページをアニメーション
