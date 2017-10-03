@@ -357,6 +357,8 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
       var animation = (back !== true) ? next.getAttribute('spat-animation') : prev.getAttribute('spat-animation');
       animation = animation || self.animation;
 
+      self.animationDuration = (back !== true) ? next.getAttribute('animation-duration') : prev.getAttribute('animation-duration');
+
       if (!animation) {
         return Promise.resolve();
       }
@@ -371,7 +373,7 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
         var nextAnimation = animation + '-out';
         var prevAnimation = animation + '-in'
       }
-      var duration = self.animationDuration || '256ms';
+      var duration = self.animationDuration ? self.animationDuration + 'ms' : '256ms';
 
       return new Promise(function(resolve) {
 
