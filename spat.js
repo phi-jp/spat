@@ -1,6 +1,6 @@
 
 /* 
- * spat 0.0.3
+ * spat 0.0.5
  * single page application framework for riot.js
  * MIT Licensed
  * 
@@ -299,6 +299,12 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
         },
       };
       page._tag.trigger('show', e);
+      page._tag.update();
+
+      if (prevPage) {
+        prevPage._tag.trigger('hide', e);
+        prevPage._tag.update();
+      }
 
       if (this._autoRender) {
         this._swap(page, prevPage);

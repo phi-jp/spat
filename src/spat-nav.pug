@@ -145,6 +145,11 @@ spat-nav
       page._tag.trigger('show', e);
       page._tag.update();
 
+      if (prevPage) {
+        prevPage._tag.trigger('hide', e);
+        prevPage._tag.update();
+      }
+
       if (this._autoRender) {
         this._swap(page, prevPage);
       }

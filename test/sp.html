@@ -106,6 +106,11 @@ app
       //   spat.nav.swap.apply(spat.nav, arguments);
       // });
       // route.start(true);
+
+      // // check back
+      // window.addEventListener('popstate', function(e) {
+      //   spat.nav._back = true;
+      // }, false);
     });
 
 home
@@ -211,7 +216,7 @@ mypage
 items(spat-animation='{animation}', animation-duration='1024')
   navigator(title='Items')
   div.title item: {itemId}
-  a(href='', onclick='{spat.nav.back}') back
+  a(onclick='{spat.nav.back}') back
   style(scoped, type='less').
     :scope {
       background-color: hsl(240, 80%, 90%);
