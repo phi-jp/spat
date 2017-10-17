@@ -143,6 +143,7 @@ spat-nav
         },
       };
       page._tag.trigger('show', e);
+      page._tag.update();
 
       if (this._autoRender) {
         this._swap(page, prevPage);
