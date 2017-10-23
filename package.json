@@ -1,6 +1,6 @@
 {
   "name": "spat",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "single page application framework for riot.js",
   "main": "index.js",
   "scripts": {

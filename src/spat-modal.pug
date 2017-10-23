@@ -81,6 +81,8 @@ spat-modal(show='{visible}')
       self.visible = true;
       self.update();
 
+      self.trigger('open');
+
       return tag;
     };
     this.alert = function(text, title) {
@@ -110,6 +112,7 @@ spat-modal(show='{visible}')
         self.visible = false;
       }
       self.update();
+      self.trigger('close');
     };
 
     this._openModal = function(modal) {
