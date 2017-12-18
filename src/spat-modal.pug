@@ -59,6 +59,16 @@ spat-modal(show='{visible}')
 
   script.
     var self = this;
+
+    window.addEventListener('keydown', function(e) {
+      // esc key
+      if (e.keyCode === 27) {
+        e.preventDefault();
+        Array.prototype.forEach.call(self.root.children, function(child) {
+          child._tag.close();
+        });
+      }
+    }, false);
     
     this.open = function(page, options) {
       var elm = document.createElement('modal-content');
@@ -136,8 +146,8 @@ spat-modal(show='{visible}')
       var modalElm = modal.refs.modal;
 
       modal.trigger('close');
-
-      if (animation) {
+      
+      if (modalElm && animation) {
         modalElm.style.animationName = 'modal-' + animation + '-out';
         modalElm.style.animationDuration = '256ms';
         modalElm.style.animationPlayState = 'running';
@@ -149,7 +159,6 @@ spat-modal(show='{visible}')
       }
     };
 
-    window.spat.modal = this;
 
     var onceEvent = function(elm, evtName, fn) {
       var temp = function() {
