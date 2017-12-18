@@ -1,0 +1,26 @@
+modal-alert.s-full.t0.l0.f.fh.p19(spat-animation="scale")
+  div.modal.rounded-4(ref='modal')
+    div.header.px16.py12.w100per.border-bottom
+      div.fs16.bold {opts.title || 'Message'}
+    div.main.p16
+      div.fs14.white-space-pre-wrap {opts.text}
+    div.footer.f.fr.p16
+      button.button.primary.px30.rounded-2.fs16(onclick="{close}") OK
+
+  style(scoped, type='less').
+    :scope {
+      background-color: rgba(0, 0, 0, 0.5);
+
+      .modal {
+        background-color: white;
+        min-width: 300px;
+
+        .main {
+          min-height: 100px;
+        }
+      }
+
+      .button {
+      }
+    }
+  script.
