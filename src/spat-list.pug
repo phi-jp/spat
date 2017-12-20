@@ -13,8 +13,7 @@ spat-list(onmousedown='{_dragstart}', onmousemove='{_dragmove}', onmouseup='{_dr
   script.
     var self = this;
 
-
-    this.on('mount', function() {
+    this.setup = function() {
       this.init();
       this.root.addEventListener('scroll', function(e) {
         var max = e.target.scrollHeight - e.target.offsetHeight-1;
@@ -26,7 +25,7 @@ spat-list(onmousedown='{_dragstart}', onmousemove='{_dragmove}', onmouseup='{_dr
           self.refresh();
         }
       }, false);
-    });
+    };
 
     this.init = function() {
       this.items = [];
@@ -106,3 +105,5 @@ spat-list(onmousedown='{_dragstart}', onmousemove='{_dragmove}', onmouseup='{_dr
       this._y = 0;
       this._offsetY = null;
     };
+
+    this.setup();
