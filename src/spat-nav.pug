@@ -69,6 +69,16 @@ spat-nav
       100% { transform: perspective(800px) rotateY(-180deg); opacity: 0; }
     }
 
+    @keyframes pushed-in {
+      0% { transform: translate(0px, 50vh); opacity: 0; }
+      100% { transform: translate(0px, 0px); opacity: 1; }
+    }
+    @keyframes pushed-out {
+      0% { opacity: 1; }
+      100% { opacity: 0.8; }
+    }
+
+
   script.
     var self = this;
 
