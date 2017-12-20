@@ -14,6 +14,7 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jade/1.11.0/jade.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/3.1.0/riot+compiler.js'></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/phi-jp/meltline/v0.1.0/meltline.css"> 
 
     <style>
     html, body {
@@ -39,6 +40,7 @@ app
     div(onclick='{alert}') alert
     div(onclick='{sidemenu}') sidemenu
     div(onclick='{indicator}') indicator
+    div(onclick='{confirm}') confirm
 
 
   style(scoped, type='less').
@@ -83,29 +85,15 @@ app
       }, 2000);
     };
 
+    this.confirm = function() {
+      spat.modal.confirm('confirm');
+    };
+
 modal
   h1 モジュール
   style(scoped, type='less').
     :scope {
 
-    }
-
-modal-alert(spat-animation='scale')
-  div.modal(ref='modal')
-    h2 {opts.text}
-
-  style(scoped, type='less').
-    :scope {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: rgba(0, 0, 0, 0.1);
-
-      .modal {
-        background-color: white;
-        padding: 10px 20px;
-        border-radius: 3px;
-      }
     }
 
 modal-sidemenu(spat-animation='left')
@@ -127,20 +115,6 @@ modal-sidemenu(spat-animation='left')
         background-color: white;
         padding: 10px 20px;
         width: 120px;
-      }
-    }
-
-modal-indicator(spat-animation='scale', spat-dismissible='{false}')
-  div.modal(ref='modal')
-    div sync...
-  style(scoped, type='less').
-    :scope {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(0, 0, 0, 0.5);
-      .modal {
-        color: white;
       }
     }
 
