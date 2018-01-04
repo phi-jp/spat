@@ -88,7 +88,9 @@ spat-modal(show='{visible}')
       self._openModal(tag);
 
       tag.root.onclick = function(e) {
-        if (tag.opts.dismissible !== false && e.currentTarget === e.target) {
+        var dismissible = tag.root.getAttribute('spat-dismissible') === 'false' ? false : null;
+        dismissible = (dismissible !== null) ? dismissible : tag.opts.dismissible;
+        if (dismissible !== false && e.currentTarget === e.target) {
           tag.close();
         }
       };
