@@ -212,6 +212,14 @@ spat-nav
       return this;
     };
 
+    this.updateCache = function() {
+      if (this.currentPage) {
+        var pageId = location.href.replace(location.origin, '');
+        this.currentPage.setAttribute('data-page-id', pageId);
+      }
+      return this;
+    };
+
     window.spat.nav = this;
 
     /*
