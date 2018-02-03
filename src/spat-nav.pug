@@ -160,6 +160,9 @@ spat-nav
         prevPage._tag.update();
       }
 
+      this.trigger('swap', {
+      });
+
       if (this._autoRender) {
         this._swap(page, prevPage);
       }

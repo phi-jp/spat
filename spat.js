@@ -336,6 +336,9 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages"></div> <div class="sp
         prevPage._tag.update();
       }
 
+      this.trigger('swap', {
+      });
+
       if (this._autoRender) {
         this._swap(page, prevPage);
       }
