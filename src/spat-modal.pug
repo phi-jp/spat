@@ -100,6 +100,19 @@ spat-modal(show='{visible}')
       };
       tag.update();
 
+      document.activeElement && document.activeElement.blur();
+      setTimeout(function() {
+        var autofocus = tag.refs.autofocus && tag.refs.autofocus;
+        if (autofocus) {
+          if (autofocus.focus) {
+            autofocus.focus();
+          }
+          else {
+            autofocus.root && autofocus.root.focus && autofocus.root.focus();
+          }
+        }
+      }, 1);
+
       self.visible = true;
       self.update();
 
