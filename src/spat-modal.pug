@@ -106,12 +106,10 @@ spat-modal(show='{visible}')
       setTimeout(function() {
         var autofocus = tag.refs.autofocus && tag.refs.autofocus;
         if (autofocus) {
-          if (autofocus.focus) {
-            autofocus.focus();
+          while (autofocus.refs && autofocus.refs.autofocus) {
+            autofocus = autofocus.refs.autofocus;
           }
-          else {
-            autofocus.root && autofocus.root.focus && autofocus.root.focus();
-          }
+          autofocus.focus();
         }
       }, 1);
 
