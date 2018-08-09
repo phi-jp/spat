@@ -104,7 +104,7 @@ spat-modal(show='{visible}')
       tag.update();
 
       setTimeout(function() {
-        var autofocus = tag.refs.autofocus && tag.refs.autofocus;
+        var autofocus = tag.refs.autofocus;
         if (autofocus) {
           while (autofocus.refs && autofocus.refs.autofocus) {
             autofocus = autofocus.refs.autofocus;
