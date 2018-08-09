@@ -174,10 +174,10 @@ spat-nav
 
       // swap animation
       swapAnimation(page, prevPage, this._back).then(function() {
-        // 前のページがあった場合
-        if (prevPage) {
-          prevPage.classList.add('spat-hide');
-        }
+        // 現在のページ以外を非表示にする
+        Array.prototype.forEach.call(self.refs.pages.children, function(page) {
+          if (page !== self.currentPage) page.classList.add('spat-hide');
+        });
 
         self.unlock();
       });
