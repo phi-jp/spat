@@ -2,10 +2,10 @@ spat-modal-actionsheet(spat-animation='bottom')
   div.modal(ref='modal')
     div.spat-modal-content
       div.spat-modal-title(if='{opts.title}') {opts.title}
-      div.spat-modal-button(each='{opts.buttons}', class='{style}', onclick='{select}') {label}
+      button.block.w-full.spat-modal-button(each='{opts.buttons}', class='{style}', onclick='{select}', ref='{autofocus ? "autofocus" : null}') {label}
 
     div.spat-modal-footer
-      div.spat-modal-button(onclick='{close}') Cancel
+      button.block.w-full.spat-modal-button(onclick='{close}') Cancel
   style(scoped, type='less').
     :scope {
       display: flex;
