@@ -13,9 +13,11 @@ spat-nav
         position: absolute;
         width: 100%;
         height: 100%;
+        z-index: 0;
 
         .spat-page {
           position: absolute;
+          z-index: 0;
           width: 100%;
           height: 100%;
           backface-visibility: hidden;
@@ -87,7 +89,8 @@ spat-nav
     this._back = false;
     this._locked = false;
     this._autoRender = true;
-    this.edgeSwipeWidth = 30;
+    //- this.edgeSwipeWidth = 30;
+    this.swipeThreshold = 10;
 
     this.on('mount', function() {
       var pages = self.refs.pages;
@@ -107,16 +110,20 @@ spat-nav
       this.update();
     };
 
+    this.getPage = function(pageId) {
+      return this.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
+    };
+
     this.swap = function(tagName, opts) {
       var prevPage = this.currentPage;
 
       // 現在の url を page id としてキャッシュ判定する
       var pageId = location.href.replace(location.origin, '');
       // マウント済みのページを取得
-      var page = this.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
+      var page = self.getPage(pageId);
       // キャッシュフラグ
       var cached = false;
-
+      
       // まだマウントされていなければ新たにマウントする
       if(page === null) {
         page = document.createElement('div');
@@ -135,6 +142,13 @@ spat-nav
           parent.appendChild(page);
         }
       };
+
+      if (!self._back && prevPage) {
+        // 戻る先の pageId をキャッシュしておく
+        page.dataset.backId = prevPage.dataset.pageId;
+        // 進むが実装されるときに参照する用
+        prevPage.dataset.nextId = pageId;
+      }
 
       // 画面をロック
       this.lock();
@@ -178,16 +192,24 @@ spat-nav
       page.classList.remove('spat-hide');
 
       // swap animation
-      swapAnimation(page, prevPage, this._back).then(function() {
+      var swapPromise = self._swipeBack ? Promise.resolve() : swapAnimation(page, prevPage, this._back);
+      
+      swapPromise.then(function() {
         // 現在のページ以外を非表示にする
         Array.prototype.forEach.call(self.refs.pages.children, function(page) {
           if (page !== self.currentPage) page.classList.add('spat-hide');
         });
 
+        // 最前面に移動
+        var parent = page.parentNode;
+        parent.removeChild(page);
+        parent.appendChild(page);
+
         self.unlock();
       });
 
       self._back = false;
+      self._swipeBack = false;
 
       this.currentPage = page;
       this.prevPage = prevPage;
@@ -230,21 +252,21 @@ spat-nav
 
     this.swipestart = function(e) {
       e.preventUpdate = true;
-      if (!self.prevPage) {
+      if (self._locked || !self.currentPage.dataset.backId || e.defaultPrevented) {
         return ;
       }
       var p = self.toPoint(e);
-      if (p.clientX < self.edgeSwipeWidth) {
-        self._holdSwipe = true;
-        self.x = self.sx = self.px = p.clientX;
-        self.y = self.sy = self.py = p.clientY;
-        self.mx = self.my = self.dx = self.dy = 0;
-      }
+      //- if (p.clientX < self.edgeSwipeWidth) {
+      self._holdSwipe = true;
+      self.x = self.sx = self.px = p.clientX;
+      self.y = self.sy = self.py = p.clientY;
+      self.mx = self.my = self.dx = self.dy = 0;
+      //- }
     };
 
     this.swipe = function(e) {
       e.preventUpdate = true;
-      if (!self._holdSwipe) {
+      if (!self._holdSwipe || e.defaultPrevented) {
         return ;
       }
       var p = self.toPoint(e);
@@ -256,10 +278,20 @@ spat-nav
       self.y = p.clientY;
       self.dx = self.x - self.sx;
       self.dy = self.y - self.sy;
-      if (self._edgeSwipe) {
-        e.preventDefault();
-        e.stopPropagation();
-        self.updatePageSwipe();
+      if (self._swiping) {
+        // 動かしているページの座標を更新する
+        if (self._swipeAnimation) {
+          e.preventDefault();
+          e.stopPropagation();
+          self.updatePageSwipe();
+          return ;
+        }
+        // スワイプ中に一定以上スワイプしたら、ページ自体を transform で動くようにする
+        if (self.dx > self.swipeThreshold) {
+          self._swipeAnimation = true;
+          e.preventDefault();
+          self.startPageSwipe();
+        }
         return ;
       }
       var ax = Math.abs(self.dx);
@@ -267,10 +299,10 @@ spat-nav
       if (ax === ay) {
         return ;
       }
+      // 横移動が多かったら、スワイプしていることにする
       if (ax > ay) {
         e.preventDefault();
-        self._edgeSwipe = true;
-        self.startPageSwipe();
+        self._swiping = true;
       }
       else {
         self._holdSwipe = false;
@@ -281,19 +313,19 @@ spat-nav
     this.swipeend = function(e) {
       e.preventUpdate = true;
       self.currentFinger = null;
-      if (!self._holdSwipe) {
+      if (!self._holdSwipe || !self._swipeAnimation) {
+        self._swiping = false;
+        self._holdSwipe = false;
         return ;
       }
-      if (self._edgeSwipe) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+      e.preventDefault();
+      e.stopPropagation();
+      self._swipeAnimation = false;
       self._holdSwipe = false;
-      self._edgeSwipe = false;
-      self.lock();
+      self._swiping = false;
       var page = self.currentPage;
       var style = page.style;
-      style.transition = self.animationDuration || '256ms';
+      style.transition = '256ms';
       var back = self.checkSwipeBack();
       // 少しでも数値が変わらないと transitionend が発火しないので -0.1 にしている
       var x = back ? '100%' : '-0.1px';
@@ -304,11 +336,11 @@ spat-nav
       onceEvent(page, 'transitionend', function() {
         if (back) {
           page.classList.add('spat-hide');
-          // TODO: うまくやる
+          self._swipeBack = true;
           spat.nav.back();
         }
         else {
-          self.prevPage.classList.add('spat-hide');
+          self.getPage(page.dataset.backId).classList.add('spat-hide');
         }
         style.removeProperty('opacity');
         style.removeProperty('transform');
@@ -320,9 +352,11 @@ spat-nav
     };
 
     this.startPageSwipe = function() {
-      self.currentPage.style.boxShadow = '0 0 100vw -1px rgba(0, 0, 0, 0.5)';
-      self.currentPage.style.opacity = '1';
-      self.prevPage.classList.remove('spat-hide');
+      var page = self.currentPage;
+      var style = page.style;
+      style.boxShadow = '0 0 100vw -1px rgba(0, 0, 0, 0.5)';
+      style.opacity = '1';
+      self.getPage(page.dataset.backId).classList.remove('spat-hide');
       self.lock();
     };
 
