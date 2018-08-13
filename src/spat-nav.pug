@@ -1,5 +1,5 @@
 spat-nav
-  div.spat-pages(ref='pages', onmousedown='{swipestart}', onmousemove='{swipe}', onmouseup='{swipeend}', ontouchstart='{swipestart}', ontouchmove='{swipe}', ontouchend='{swipeend}')
+  div.spat-pages(ref='pages', onmousedown='{swipestart}', onmousemove='{swipe}', onmouseup='{swipeend}', ontouchstart='{swipestart}', ontouchmove='{swipe}', ontouchend='{swipeend}', ondragend='{swipeend}')
   div.spat-lock(show='{_locked}', ref='lock', onmousemove='{swipe}', onmouseup='{swipeend}')
 
   style(scoped, type='less').
@@ -90,7 +90,7 @@ spat-nav
     this._locked = false;
     this._autoRender = true;
     //- this.edgeSwipeWidth = 30;
-    this.swipeThreshold = 10;
+    this.swipeThreshold = 1;
 
     this.on('mount', function() {
       var pages = self.refs.pages;
