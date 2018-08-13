@@ -202,8 +202,10 @@ spat-nav
 
         // 最前面に移動
         var parent = page.parentNode;
-        parent.removeChild(page);
-        parent.appendChild(page);
+        if (parent.lastChildElement !== page) {
+          parent.removeChild(page);
+          parent.appendChild(page);
+        }
 
         self.unlock();
       });
