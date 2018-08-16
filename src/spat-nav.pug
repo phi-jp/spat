@@ -89,7 +89,9 @@ spat-nav
     this._back = false;
     this._locked = false;
     this._autoRender = true;
+    // 画面端からスワイプが反応する幅の割合
     this.swipeWidthRate = 1;
+    // スワイプでページが動き始めるために必要な幅(px)
     this.swipeThreshold = 1;
 
     this.on('mount', function() {
@@ -108,6 +110,10 @@ spat-nav
       this._locked = false;
       this.refs.lock.style.backgroundColor = '';
       this.update();
+    };
+
+    this.getPage = function(pageId) {
+      return self.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
     };
 
     this.swap = function(tagName, opts) {
@@ -178,6 +184,7 @@ spat-nav
       }
     };
 
+    // ページをスワイプしたい場合に設定する
     this.setupPageSwipe = function(page, data) {
       data = data || {};
       if (data.canBack) {
@@ -381,6 +388,7 @@ spat-nav
       }
     };
     
+    // スワイプ中にブラウザバックした場合などにスワイプをキャンセルする
     this.cancelSwipe = function() {
       if (self._resetSwipe()) {
         self._releaseSwipe(false);
@@ -430,10 +438,6 @@ spat-nav
       else {
         return e;
       }
-    };
-
-    this.getPage = function(pageId) {
-      return self.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
     };
 
     window.spat.nav = this;
