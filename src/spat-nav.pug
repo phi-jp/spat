@@ -89,7 +89,7 @@ spat-nav
     this._back = false;
     this._locked = false;
     this._autoRender = true;
-    //- this.edgeSwipeWidth = 30;
+    this.swipeWidthRate = 1;
     this.swipeThreshold = 1;
 
     this.on('mount', function() {
@@ -263,12 +263,12 @@ spat-nav
         return ;
       }
       var p = self.toPoint(e);
-      //- if (p.clientX < self.edgeSwipeWidth) {
-      self._holdSwipe = true;
-      self.x = self.sx = self.px = p.clientX;
-      self.y = self.sy = self.py = p.clientY;
-      self.mx = self.my = self.dx = self.dy = 0;
-      //- }
+      if (p.clientX < innerWidth * self.swipeWidthRate) {
+        self._holdSwipe = true;
+        self.x = self.sx = self.px = p.clientX;
+        self.y = self.sy = self.py = p.clientY;
+        self.mx = self.my = self.dx = self.dy = 0;
+      }
     };
 
     this._swipe = function(e) {
