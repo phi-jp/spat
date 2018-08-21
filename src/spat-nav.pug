@@ -25,7 +25,9 @@ spat-nav
           overflow: scroll;
           -webkit-overflow-scrolling: touch;
           overflow-scrolling: touch;
-
+          &.current {
+            z-index: 9999;
+          }
           &.spat-hide {
             display: none;
           }
@@ -208,15 +210,14 @@ spat-nav
       swapPromise.then(function() {
         // 現在のページ以外を非表示にする
         Array.prototype.forEach.call(self.refs.pages.children, function(page) {
-          if (page !== self.currentPage) page.classList.add('spat-hide');
+          if (page !== self.currentPage) {
+            page.classList.add('spat-hide');
+            page.classList.remove('current');
+          }
         });
 
         // 最前面に移動
-        var parent = page.parentNode;
-        if (parent.lastChildElement !== page) {
-          parent.removeChild(page);
-          parent.appendChild(page);
-        }
+        page.classList.add('current');
 
         self.unlock();
       });
