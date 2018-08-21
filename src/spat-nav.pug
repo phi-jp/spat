@@ -133,6 +133,7 @@ spat-nav
         page = document.createElement('div');
         page.classList.add('spat-page');
         page.classList.add('spat-hide');
+        page.classList.add('current');
         page.setAttribute('data-page-id', pageId);
         this.refs.pages.appendChild(page);
         riot.mount(page, tagName);
@@ -144,6 +145,7 @@ spat-nav
           var parent = page.parentNode;
           parent.removeChild(page);
           parent.appendChild(page);
+          page.classList.add('current');
         }
       };
 
