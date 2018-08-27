@@ -113,7 +113,8 @@ spat-nav
       this.refs.lock.style.backgroundColor = '';
       this.update();
     };
-
+    
+    // pageId に一致するページを取得する
     this.getPage = function(pageId) {
       return self.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
     };
@@ -145,6 +146,7 @@ spat-nav
           var parent = page.parentNode;
           parent.removeChild(page);
           parent.appendChild(page);
+          // z-index の前後関係を調整
           page.classList.add('current');
         }
       };
@@ -188,7 +190,15 @@ spat-nav
       }
     };
 
-    // ページをスワイプしたい場合に設定する
+    /**
+     * ページをスワイプしたい場合に設定する
+     * page 対象のページ
+     * data page に設定したいスワイプに関するプロパティ
+     * data.canBack 左から右の方向にスワイプさせたい時に設定する
+     * data.canForward 右から左の方向にスワイプさせたいときに設定する (未実装)
+     * data.backId canBack の場合 pageId を設定すると、 スワイプ中に背面にそのページが表示される
+     * data.nextId canForward の場合 pageId を設定すると、 スワイプ中に前面にそのページが表示される (未実装)
+     */
     this.setupPageSwipe = function(page, data) {
       data = data || {};
       if (data.canBack) {
@@ -266,13 +276,16 @@ spat-nav
       return this;
     };
 
+    // スワイプ開始時の処理
     this._swipestart = function(e) {
       e.preventUpdate = true;
+      // _locked か canBack が設定されてない場合か、イベントのデフォルト処理が無効化されているときは何もしない
       if (self._locked || !self.currentPage.dataset.canBack || e.defaultPrevented) {
         self.cancelSwipe();
         return ;
       }
       var p = self.toPoint(e);
+      // タッチした範囲がスワイプ対象の範囲内の場合は、ホールド状態にする
       if (p.clientX < innerWidth * self.swipeWidthRate) {
         self._holdSwipe = true;
         self.x = self.sx = self.px = p.clientX;
@@ -281,8 +294,10 @@ spat-nav
       }
     };
 
+    // スワイプ中の処理
     this._swipe = function(e) {
       e.preventUpdate = true;
+      // スワイプがホールドされてないときか、イベントのデフォルト処理が無効化されているときは何もしない
       if (!self._holdSwipe || e.defaultPrevented) {
         self.cancelSwipe();
         return ;
@@ -296,8 +311,10 @@ spat-nav
       self.y = p.clientY;
       self.dx = self.x - self.sx;
       self.dy = self.y - self.sy;
+
+      // スワイプ中の処理
       if (self._swiping) {
-        // 動かしているページの座標を更新する
+        // 一定以上スワイプしている場合、動かしているページの座標を更新する
         if (self._swipeAnimation) {
           e.preventDefault();
           e.stopPropagation();
@@ -312,12 +329,15 @@ spat-nav
         }
         return ;
       }
+
+      // ホールドはしているが、スワイプはしてないときの処理
       var ax = Math.abs(self.dx);
       var ay = Math.abs(self.dy);
+      // 移動量が同じ場合は、 0 === 0 の場合を考慮して、値がずれるまでは何もしない
       if (ax === ay) {
         return ;
       }
-      // 横移動が多かったら、スワイプしていることにする
+      // 横移動が多かったら、スワイプ中にする
       if (ax > ay) {
         e.preventDefault();
         e.stopPropagation();
@@ -344,6 +364,12 @@ spat-nav
       return true;
     };
 
+    /** 
+     * スワイプを終了し、ページを特定の位置へ移動させる処理
+     * スワイプが一定以上であれば、左か右へ移動させる
+     * スワイプが一定未満であれば、元の位置へ戻す
+     * back スワイプバックかどうかの判定を固定で指定したい場合に設定
+     */
     this._releaseSwipe = function(back) {
       if (back === undefined) {
         back = self._checkSwipeBack();
@@ -382,6 +408,7 @@ spat-nav
       });
     };
 
+    // ページからポインタを離したときの処理
     this._swipeend = function(e) {
       e.preventUpdate = true;
       if (self._resetSwipe()) {
@@ -398,6 +425,7 @@ spat-nav
       }
     };
 
+    // スワイプ中のページの座標を移動させるための前処理
     this._startPageSwipe = function() {
       self.trigger('swipebackstart');
       self._swipeAnimation = true;
@@ -412,10 +440,12 @@ spat-nav
       self.lock();
     };
 
+    // スワイプ中のページの座標を更新する
     this._updatePageSwipe = function() {
       self._swipePage.style.transform = 'translateX(' + Math.max(self.dx, 0) + 'px)';
     };
 
+    // 現時点でのスワイプ量がスワイプバックと判定されるかどうか
     this._checkSwipeBack = function() {
       var SWIPE_WIDTH_THRESHOLD = 0.5;
       var SWIPE_SPEED_THRESHOLD = 10;
@@ -424,6 +454,7 @@ spat-nav
       return rate > 1;
     };
 
+    // マウス、タッチのどちらでも共通のプロパティで、座標にアクセスできるようにする
     this.toPoint = function(e) {
       var touches = e.changedTouches;
       // SP
