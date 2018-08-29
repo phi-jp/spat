@@ -1,6 +1,6 @@
 spat-nav
-  div.spat-pages(ref='pages')
-  div.spat-lock(show='{_locked}', ref='lock')
+  div.spat-pages(ref='pages', onmousedown='{_swipestart}', onmousemove='{_swipe}', onmouseup='{_swipeend}', ontouchstart='{_swipestart}', ontouchmove='{_swipe}', ontouchend='{_swipeend}', ondragend='{_swipeend}')
+  div.spat-lock(show='{_locked}', ref='lock', onmousemove='{_swipe}', onmouseup='{_swipeend}')
 
   style(scoped, type='less').
     :scope {
@@ -13,9 +13,11 @@ spat-nav
         position: absolute;
         width: 100%;
         height: 100%;
+        z-index: 0;
 
         .spat-page {
           position: absolute;
+          z-index: 0;
           width: 100%;
           height: 100%;
           backface-visibility: hidden;
@@ -23,7 +25,9 @@ spat-nav
           overflow: scroll;
           -webkit-overflow-scrolling: touch;
           overflow-scrolling: touch;
-
+          &.current {
+            z-index: 9999;
+          }
           &.spat-hide {
             display: none;
           }
@@ -87,6 +91,14 @@ spat-nav
     this._back = false;
     this._locked = false;
     this._autoRender = true;
+    // 画面端からスワイプが反応する幅の割合
+    this.swipeWidthRate = 1;
+    // スワイプでページが動き始めるために必要な幅(px)
+    this.swipeThreshold = 1;
+
+    this.on('mount', function() {
+      var pages = self.refs.pages;
+    });
 
     this.lock = function(color) {
       this._locked = true;
@@ -101,6 +113,11 @@ spat-nav
       this.refs.lock.style.backgroundColor = '';
       this.update();
     };
+    
+    // pageId に一致するページを取得する
+    this.getPage = function(pageId) {
+      return self.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
+    };
 
     this.swap = function(tagName, opts) {
       var prevPage = this.currentPage;
@@ -108,15 +125,16 @@ spat-nav
       // 現在の url を page id としてキャッシュ判定する
       var pageId = location.href.replace(location.origin, '');
       // マウント済みのページを取得
-      var page = this.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
+      var page = self.getPage(pageId);
       // キャッシュフラグ
       var cached = false;
-
+      
       // まだマウントされていなければ新たにマウントする
       if(page === null) {
         page = document.createElement('div');
         page.classList.add('spat-page');
         page.classList.add('spat-hide');
+        page.classList.add('current');
         page.setAttribute('data-page-id', pageId);
         this.refs.pages.appendChild(page);
         riot.mount(page, tagName);
@@ -128,6 +146,8 @@ spat-nav
           var parent = page.parentNode;
           parent.removeChild(page);
           parent.appendChild(page);
+          // z-index の前後関係を調整
+          page.classList.add('current');
         }
       };
 
@@ -152,6 +172,11 @@ spat-nav
           }
         },
       };
+      delete page.dataset.canBack;
+      delete page.dataset.canForward;
+      delete page.dataset.backId;
+      delete page.dataset.nextId;
+      this.trigger('swap', e);
       page._tag.trigger('show', e);
       page._tag.update();
 
@@ -160,12 +185,31 @@ spat-nav
         prevPage._tag.update();
       }
 
-      this.trigger('swap', {
-      });
-
       if (this._autoRender) {
         this._swap(page, prevPage);
       }
+    };
+
+    /**
+     * ページをスワイプしたい場合に設定する
+     * page 対象のページ
+     * data page に設定したいスワイプに関するプロパティ
+     * data.canBack 左から右の方向にスワイプさせたい時に設定する
+     * data.canForward 右から左の方向にスワイプさせたいときに設定する (未実装)
+     * data.backId canBack の場合 pageId を設定すると、 スワイプ中に背面にそのページが表示される
+     * data.nextId canForward の場合 pageId を設定すると、 スワイプ中に前面にそのページが表示される (未実装)
+     */
+    this.setupPageSwipe = function(page, data) {
+      data = data || {};
+      if (data.canBack) {
+        page.dataset.canBack = 'true';
+      }
+      if (data.canForward) {
+        page.dataset.canForward = 'true';
+      }
+      page.dataset.backId = data.backId;
+      page.dataset.nextId = data.nextId;
+      return this;
     };
 
     this._swap = function(page, prevPage) {
@@ -173,16 +217,25 @@ spat-nav
       page.classList.remove('spat-hide');
 
       // swap animation
-      swapAnimation(page, prevPage, this._back).then(function() {
+      var swapPromise = self.disableSwapAnimation ? Promise.resolve() : swapAnimation(page, prevPage, this._back);
+      
+      swapPromise.then(function() {
         // 現在のページ以外を非表示にする
         Array.prototype.forEach.call(self.refs.pages.children, function(page) {
-          if (page !== self.currentPage) page.classList.add('spat-hide');
+          if (page !== self.currentPage) {
+            page.classList.add('spat-hide');
+            page.classList.remove('current');
+          }
         });
+
+        // 最前面に移動
+        page.classList.add('current');
 
         self.unlock();
       });
 
       self._back = false;
+      self.disableSwapAnimation = false;
 
       this.currentPage = page;
       this.prevPage = prevPage;
@@ -221,6 +274,204 @@ spat-nav
         this.currentPage.setAttribute('data-page-id', pageId);
       }
       return this;
+    };
+
+    // スワイプ開始時の処理
+    this._swipestart = function(e) {
+      e.preventUpdate = true;
+      // _locked か canBack が設定されてない場合か、イベントのデフォルト処理が無効化されているときは何もしない
+      if (self._locked || !self.currentPage.dataset.canBack || e.defaultPrevented) {
+        self.cancelSwipe();
+        return ;
+      }
+      var p = self.toPoint(e);
+      // タッチした範囲がスワイプ対象の範囲内の場合は、ホールド状態にする
+      if (p.clientX < innerWidth * self.swipeWidthRate) {
+        self._holdSwipe = true;
+        self.x = self.sx = self.px = p.clientX;
+        self.y = self.sy = self.py = p.clientY;
+        self.mx = self.my = self.dx = self.dy = 0;
+      }
+    };
+
+    // スワイプ中の処理
+    this._swipe = function(e) {
+      e.preventUpdate = true;
+      // スワイプがホールドされてないときか、イベントのデフォルト処理が無効化されているときは何もしない
+      if (!self._holdSwipe || e.defaultPrevented) {
+        self.cancelSwipe();
+        return ;
+      }
+      var p = self.toPoint(e);
+      self.mx = p.clientX - self.px;
+      self.my = p.clientY - self.py;
+      self.px = self.x;
+      self.py = self.y;
+      self.x = p.clientX;
+      self.y = p.clientY;
+      self.dx = self.x - self.sx;
+      self.dy = self.y - self.sy;
+
+      // スワイプ中の処理
+      if (self._swiping) {
+        // 一定以上スワイプしている場合、動かしているページの座標を更新する
+        if (self._swipeAnimation) {
+          e.preventDefault();
+          e.stopPropagation();
+          self._updatePageSwipe();
+          return ;
+        }
+        // スワイプ中に一定以上スワイプしたら、ページ自体を transform で動くようにする
+        if (self.dx > self.swipeThreshold) {
+          e.preventDefault();
+          e.stopPropagation();
+          self._startPageSwipe();
+        }
+        return ;
+      }
+
+      // ホールドはしているが、スワイプはしてないときの処理
+      var ax = Math.abs(self.dx);
+      var ay = Math.abs(self.dy);
+      // 移動量が同じ場合は、 0 === 0 の場合を考慮して、値がずれるまでは何もしない
+      if (ax === ay) {
+        return ;
+      }
+      // 横移動が多かったら、スワイプ中にする
+      if (ax > ay) {
+        e.preventDefault();
+        e.stopPropagation();
+        self._swiping = true;
+      }
+      else {
+        self._holdSwipe = false;
+      }
+      
+    };
+
+    // スワイプしてない状態にする。 _releaseSwipe をしないといけない場合に true を返す
+    this._resetSwipe = function() {
+      self.currentFinger = null;
+      if (!self._holdSwipe || !self._swipeAnimation) {
+        self._swipeAnimation = false;
+        self._holdSwipe = false;
+        self._swiping = false;
+        if (self._locked) {
+          self.unlock();
+        }
+        return ;
+      }
+      return true;
+    };
+
+    /** 
+     * スワイプを終了し、ページを特定の位置へ移動させる処理
+     * スワイプが一定以上であれば、左か右へ移動させる
+     * スワイプが一定未満であれば、元の位置へ戻す
+     * back スワイプバックかどうかの判定を固定で指定したい場合に設定
+     */
+    this._releaseSwipe = function(back) {
+      if (back === undefined) {
+        back = self._checkSwipeBack();
+      }
+      self._swipeAnimation = false;
+      self._holdSwipe = false;
+      self._swiping = false;
+      var page = self._swipePage;
+      self._swipePage = null;
+      var style = page.style;
+      style.transition = '256ms';
+      // 少しでも数値が変わらないと transitionend が発火しないので -0.1 にしている
+      var x = back ? '100%' : '-0.1px';
+      style.transform = 'translateX(' + x + ')';
+      if (back) {
+        style.opacity = '0';
+      }
+      onceEvent(page, 'transitionend', function() {
+        if (back) {
+          page.classList.add('spat-hide');
+          self.disableSwapAnimation = true;
+          self.trigger('swipebackend');
+        }
+        else {
+          var backPage = self.getPage(page.dataset.backId);
+          if (backPage && self.currentPage !== backPage) {
+            backPage.classList.add('spat-hide');
+          }
+        }
+        style.removeProperty('opacity');
+        style.removeProperty('transform');
+        style.removeProperty('transition');
+        style.removeProperty('box-shadow');
+        
+        self.unlock();
+      });
+    };
+
+    // ページからポインタを離したときの処理
+    this._swipeend = function(e) {
+      e.preventUpdate = true;
+      if (self._resetSwipe()) {
+        e.preventDefault();
+        e.stopPropagation();
+        self._releaseSwipe();
+      }
+    };
+    
+    // スワイプ中にブラウザバックした場合などにスワイプをキャンセルする
+    this.cancelSwipe = function() {
+      if (self._resetSwipe()) {
+        self._releaseSwipe(false);
+      }
+    };
+
+    // スワイプ中のページの座標を移動させるための前処理
+    this._startPageSwipe = function() {
+      self.trigger('swipebackstart');
+      self._swipeAnimation = true;
+      var page = self._swipePage = self.currentPage;
+      var style = page.style;
+      style.boxShadow = '0 0 100vw -1px rgba(0, 0, 0, 0.5)';
+      style.opacity = '1';
+      var backPage = self.getPage(page.dataset.backId);
+      if (backPage) {
+        backPage.classList.remove('spat-hide');
+      }
+      self.lock();
+    };
+
+    // スワイプ中のページの座標を更新する
+    this._updatePageSwipe = function() {
+      self._swipePage.style.transform = 'translateX(' + Math.max(self.dx, 0) + 'px)';
+    };
+
+    // 現時点でのスワイプ量がスワイプバックと判定されるかどうか
+    this._checkSwipeBack = function() {
+      var SWIPE_WIDTH_THRESHOLD = 0.5;
+      var SWIPE_SPEED_THRESHOLD = 10;
+      var rate = self.dx / (innerWidth * SWIPE_WIDTH_THRESHOLD);
+      rate += self.mx / SWIPE_SPEED_THRESHOLD;
+      return rate > 1;
+    };
+
+    // マウス、タッチのどちらでも共通のプロパティで、座標にアクセスできるようにする
+    this.toPoint = function(e) {
+      var touches = e.changedTouches;
+      // SP
+      if (touches) {
+        if (!self.currentFinger) {
+          return self.currentFinger = touches[0];
+        }
+        else {
+          return Array.prototype.find.call(touches, function(touch) {
+            return touch.identifier === self.currentFinger.identifier;
+          });
+        }
+      }
+      // PC
+      else {
+        return e;
+      }
     };
 
     window.spat.nav = this;
