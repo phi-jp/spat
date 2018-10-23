@@ -38,7 +38,7 @@ riot.tag2('spat-modal-actionsheet', '<div class="modal" ref="modal"> <div class=
     };
 });
 
-riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{display:block;overflow:scroll;-webkit-overflow-scrolling:touch;overflow-scrolling:touch;height:100%;will-change:transform}', 'onmousedown="{_dragstart}" onmousemove="{_dragmove}" onmouseup="{_dragend}" riot-style="transform: translateY({_y}px)"', function(opts) {
+riot.tag2('spat-list', '<yield></yield>', 'spat-list,[data-is="spat-list"]{display:block;overflow:scroll;-webkit-overflow-scrolling:touch;overflow-scrolling:touch;height:100%;will-change:transform}', 'onmousedown="{_dragstart}" onmousemove="{_dragmove}" onmouseup="{_dragend}" riot-style="transform: translateY({_y}px);"', function(opts) {
     var self = this;
 
     this.setup = function() {
@@ -347,11 +347,11 @@ riot.tag2('spat-nav', '<div class="spat-pages" ref="pages" onmousedown="{_swipes
             console.log(Date.now() - d);
           }
         },
-      };
-      delete page.dataset.canBack;
-      delete page.dataset.canForward;
-      delete page.dataset.backId;
-      delete page.dataset.nextId;
+      }
+      page.removeAttribute('data-can-back');
+      page.removeAttribute('data-can-forward');
+      page.removeAttribute('data-back-id');
+      page.removeAttribute('data-next-id');
       this.trigger('swap', e);
       page._tag.trigger('show', e);
       page._tag.update();
