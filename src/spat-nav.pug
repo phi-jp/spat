@@ -171,11 +171,11 @@ spat-nav
             console.log(Date.now() - d);
           }
         },
-      };
-      delete page.dataset.canBack;
-      delete page.dataset.canForward;
-      delete page.dataset.backId;
-      delete page.dataset.nextId;
+      }
+      page.removeAttribute('data-can-back');
+      page.removeAttribute('data-can-forward');
+      page.removeAttribute('data-back-id');
+      page.removeAttribute('data-next-id');
       this.trigger('swap', e);
       page._tag.trigger('show', e);
       page._tag.update();
