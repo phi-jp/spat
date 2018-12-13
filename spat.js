@@ -169,6 +169,15 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
         self._closeModal(tag);
         prevFocusElement && prevFocusElement.focus();
       };
+
+      tag.closeWith = function(promise) {
+        var pend = promise.then(function(res) {
+          tag.close();
+          return res;
+        });
+        pend.catch(tag.close);
+        return pend;
+      };
       tag.update();
 
       setTimeout(function() {
