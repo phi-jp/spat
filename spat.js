@@ -171,12 +171,8 @@ riot.tag2('spat-modal', '', 'spat-modal,[data-is="spat-modal"]{position:fixed;tr
       };
 
       tag.closeWith = function(promise) {
-        var pend = promise.then(function(res) {
-          tag.close();
-          return res;
-        });
-        pend.catch(tag.close);
-        return pend;
+        promise.then(tag.close).catch(tag.close);
+        return promise;
       };
       tag.update();
 

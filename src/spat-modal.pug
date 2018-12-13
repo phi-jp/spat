@@ -103,12 +103,8 @@ spat-modal(show='{visible}')
       };
       //- 非同期処理終了後に自動で閉じる
       tag.closeWith = function(promise) {
-        var pend = promise.then(function(res) {
-          tag.close();
-          return res;
-        });
-        pend.catch(tag.close);
-        return pend;
+        promise.then(tag.close).catch(tag.close);
+        return promise;
       };
       tag.update();
 
