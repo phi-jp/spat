@@ -109,6 +109,11 @@ spat-modal(show='{visible}')
         self._closeModal(tag);
         prevFocusElement && prevFocusElement.focus();
       };
+      //- 非同期処理終了後に自動で閉じる
+      tag.closeWith = function(promise) {
+        promise.then(tag.close).catch(tag.close);
+        return promise;
+      };
       tag.update();
 
       setTimeout(function() {
