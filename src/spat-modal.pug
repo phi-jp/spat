@@ -56,6 +56,14 @@ spat-modal(show='{visible}')
         0% { transform: translateY(0px); opacity: 1; }
         100% { transform: translateY(200px); opacity: 0; }
       }
+      @keyframes modal-push-in {
+        0% { transform: translateY(200px); opacity: 0; }
+        100% { transform: translateY(0px); opacity: 1; }
+      }
+      @keyframes modal-push-out {
+        0% { transform: translateY(0px); opacity: 1; }
+        100% { transform: translateY(200px); opacity: 0; }
+      }
 
       @keyframes modal-scale-in {
         0% { transform: scale(1.5); opacity: 0; }
@@ -151,7 +159,7 @@ spat-modal(show='{visible}')
     };
 
     this._openModal = function(modal) {
-      var animation = modal.root.getAttribute('spat-animation') || 'scale';
+      var animation = modal.root.getAttribute('spat-animation');
       var modalElm = modal.refs.modal;
 
       if (animation) {
@@ -167,7 +175,7 @@ spat-modal(show='{visible}')
     };
 
     this._closeModal = function(modal) {
-      var animation = modal.root.getAttribute('spat-animation') || 'scale';
+      var animation = modal.root.getAttribute('spat-animation');
       var modalElm = modal.refs.modal;
 
       modal.trigger('close');
@@ -181,6 +189,10 @@ spat-modal(show='{visible}')
           modal.unmount();
           self.close();
         });
+      }
+      else {
+        modal.unmount();
+        self.close();
       }
     };
 
