@@ -147,8 +147,9 @@ spat-nav
         page.classList.add('spat-hide');
         page.classList.add('current');
         page.setAttribute('data-page-id', pageId);
-        this.refs.pages.appendChild(page);
         riot.mount(page, tagName);
+        
+        this.refs.pages.appendChild(page);
       }
       else {
         cached = true;
