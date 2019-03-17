@@ -78,6 +78,7 @@ spat-modal(show='{visible}')
   script.
     var self = this;
 
+    // esc を押した際の挙動
     window.addEventListener('keydown', function(e) {
       // esc key
       if (e.keyCode === 27) {
@@ -85,6 +86,17 @@ spat-modal(show='{visible}')
         var children = self.root.children;
         var child = children[children.length - 1];
         child && child._tag.close();
+      }
+    }, false);
+
+    // 戻るを押した際の挙動
+    window.addEventListener('popstate', (e) => {
+      var children = self.root.children;
+      var child = children[children.length - 1];
+      if (child) {
+        // routeful 依存
+        e.preventBack = true;
+        child._tag.close();
       }
     }, false);
     
