@@ -4,6 +4,8 @@
   "description": "single page application framework for riot.js",
   "main": "spat.js",
   "scripts": {
+    "build": "gulp riot",
+    "dev": "gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
