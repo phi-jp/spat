@@ -27,7 +27,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-riot": "^1.1.0",
     "gulp-sort": "^2.0.0",
-    "gulp-uglify": "^2.0.1",
+    "gulp-uglify-es": "^1.0.4",
     "jade": "^1.11.0",
     "less": "^2.7.2",
     "pug": "^2.0.0-beta11"
