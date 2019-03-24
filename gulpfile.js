@@ -25,6 +25,14 @@ var banner = `
 
 'use strict';
 
+// support node
+;(() => {
+  var g = (typeof window === "undefined") ? global : window;
+  if (!g.riot) {
+    g.riot = require('riot');
+  }
+})();
+
 var spat = {
   nav: {},
   modal: {},
