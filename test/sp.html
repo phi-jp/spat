@@ -13,7 +13,7 @@
     
     <script src='https://cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jade/1.11.0/jade.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/3.1.0/riot+compiler.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/3.8.2/riot+compiler.js'></script>
     <!-- <script src="https://cdn.jsdelivr.net/riot-route/3.1.0/route.js"></script> -->
     <script src='https://cdn.rawgit.com/phi-jp/routeful/02877522e6847dc41d5d1a79c8ad8f6b0398d14b/routeful.js'></script>
 
@@ -39,7 +39,7 @@
 <script type="riot/tag" template='jade'>
 
 app
-  div(data-is='spat-nav')
+  div(data-is='spat-nav', scrollable='{true}')
   nav.tabs
     div.tab-items
       a.tab-item.active(href='#home') Home
@@ -190,6 +190,7 @@ notice
   navigator(title='通知')
   div.items
     a(each='{items}', href='#items/{id}') {label}
+  p(each='{i in [1, 2, 3, 4, 5, 6, 7, 8, 9]}') Text Text Text Text Text Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text Text  Text Text Text Text Text Text Text Text Text Text 
   style(scoped, type='less').
     :scope {
       background-color: hsl(120, 80%, 90%);
@@ -258,6 +259,7 @@ navigator
 </script>
 <script>
 
+riot.util.tmpl.errorHandler = function() {};
 riot.mount('app');    
 
 document.addEventListener('DOMContentLoaded', function() {
