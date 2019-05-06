@@ -1,5 +1,5 @@
 spat-nav
-  div.spat-pages(ref='pages', onmousedown='{_swipestart}', onmousemove='{_swipe}', onmouseup='{_swipeend}', ontouchstart='{_swipestart}', ontouchmove='{_swipe}', ontouchend='{_swipeend}', ondragend='{_swipeend}')
+  div.spat-pages(class="{'scrollable': opts.scrollable !== false}", ref='pages', onmousedown='{_swipestart}', onmousemove='{_swipe}', onmouseup='{_swipeend}', ontouchstart='{_swipestart}', ontouchmove='{_swipe}', ontouchend='{_swipeend}', ondragend='{_swipeend}')
   div.spat-lock(show='{_locked}', ref='lock', onmousemove='{_swipe}', onmouseup='{_swipeend}')
 
   style(scoped, type='less').
@@ -10,26 +10,33 @@ spat-nav
       height: 100%;
 
       .spat-pages {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-
         .spat-page {
-          position: absolute;
-          z-index: 0;
-          width: 100%;
-          height: 100%;
           backface-visibility: hidden;
           animation-fill-mode: forwards;
-          overflow: scroll;
-          -webkit-overflow-scrolling: touch;
-          overflow-scrolling: touch;
+
           &.current {
             z-index: 9999;
           }
           &.spat-hide {
             display: none;
+          }
+        }
+
+        // スクロール可能だった場合
+        &.scrollable {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          z-index: 0;
+
+          .spat-page {
+            position: absolute;
+            z-index: 0;
+            width: 100%;
+            height: 100%;
+            overflow: scroll;
+            -webkit-overflow-scrolling: touch;
+            overflow-scrolling: touch;
           }
         }
       }
@@ -251,8 +258,6 @@ spat-nav
 
       this.currentPage = page;
       this.prevPage = prevPage;
-
-      delete spat.nav.opts;
     };
 
     this.back = function(index, opts) {
