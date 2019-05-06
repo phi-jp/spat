@@ -516,7 +516,12 @@ spat-nav
         var nextAnimation = animation + '-out';
         var prevAnimation = animation + '-in'
       }
-      var duration = self.animationDuration ? self.animationDuration + 'ms' : '256ms';
+      var duration = self.animationDuration ? self.animationDuration : 256;
+
+      if (back) {
+        duration *= 0.75;
+      }
+      duration += 'ms';
 
       return new Promise(function(resolve) {
         // 今のページをアニメーション
