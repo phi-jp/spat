@@ -654,14 +654,8 @@ riot.tag2('spat-nav', '<div class="spat-pages {\'scrollable\': opts.scrollable !
       self._swipeAnimation = true;
       var page = self._swipePage = self.currentPage;
       var style = page.style;
-      if (page.dataset.swipeDirection === 'bottom') {
-        style.boxShadow = '0 0 100vw -1px rgba(0, 0, 0, 0.5)';
-        style.opacity = '1';
-      }
-      else {
-        style.boxShadow = '0 0 100vw -1px rgba(0, 0, 0, 0.5)';
-        style.opacity = '1';
-      }
+      style.boxShadow = '0 0 100vw -1px rgba(0, 0, 0, 0.5)';
+      style.opacity = '1';
       var backPage = self.getPage(page.dataset.backId);
       if (backPage) {
         backPage.classList.remove('spat-hide');
