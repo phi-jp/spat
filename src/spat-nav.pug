@@ -14,9 +14,6 @@ spat-nav
           backface-visibility: hidden;
           animation-fill-mode: forwards;
 
-          &.current {
-            z-index: 9999;
-          }
           &.spat-hide {
             display: none;
           }
@@ -32,6 +29,9 @@ spat-nav
           .spat-page {
             position: absolute;
             z-index: 0;
+            &.current {
+              z-index: 9999;
+            }
             width: 100%;
             height: 100%;
             overflow: scroll;
@@ -111,6 +111,8 @@ spat-nav
     this._autoRender = true;
     // 画面端からスワイプが反応する幅の割合
     this.swipeWidthRate = 1;
+    // 画面上からスワイプが反応する高さの割合
+    this.swipeHeightRate = 1;
     // スワイプでページが動き始めるために必要な幅(px)
     this.swipeThreshold = 1;
 
@@ -228,6 +230,9 @@ spat-nav
       }
       page.dataset.backId = data.backId;
       page.dataset.nextId = data.nextId;
+      if (data.swipeDirection) {
+        page.dataset.swipeDirection = data.swipeDirection;
+      }
       return this;
     };
 
@@ -302,8 +307,19 @@ spat-nav
         return ;
       }
       var p = self.toPoint(e);
+      var hold = false;
+
+      //- 下スワイプ
+      if (self.currentPage.dataset.swipeDirection === 'bottom') {
+        hold = p.clientY < innerHeight * self.swipeHeightRate;
+      }
+      //- 右スワイプ
+      else {
+        hold = p.clientX < innerWidth * self.swipeWidthRate;
+      }
+
       // タッチした範囲がスワイプ対象の範囲内の場合は、ホールド状態にする
-      if (p.clientX < innerWidth * self.swipeWidthRate) {
+      if (hold) {
         self._holdSwipe = true;
         self.x = self.sx = self.px = p.clientX;
         self.y = self.sy = self.py = p.clientY;
@@ -338,11 +354,24 @@ spat-nav
           self._updatePageSwipe();
           return ;
         }
+        //- そのページでも条件を満たしてない場合は何もしない
+        if (self.currentPage._tag.checkSpatSwipe && !self.currentPage._tag.checkSpatSwipe()) {
+          return ;
+        }
         // スワイプ中に一定以上スワイプしたら、ページ自体を transform で動くようにする
-        if (self.dx > self.swipeThreshold) {
-          e.preventDefault();
-          e.stopPropagation();
-          self._startPageSwipe();
+        if (self.currentPage.dataset.swipeDirection === 'bottom') {
+          if (self.dy > self.swipeThreshold) {
+            e.preventDefault();
+            e.stopPropagation();
+            self._startPageSwipe();
+          }
+        }
+        else {
+          if (self.dx > self.swipeThreshold) {
+            e.preventDefault();
+            e.stopPropagation();
+            self._startPageSwipe();
+          }
         }
         return ;
       }
@@ -354,14 +383,27 @@ spat-nav
       if (ax === ay) {
         return ;
       }
-      // 横移動が多かったら、スワイプ中にする
-      if (ax > ay) {
-        e.preventDefault();
-        e.stopPropagation();
-        self._swiping = true;
+      if (self.currentPage.dataset.swipeDirection === 'bottom') {
+        // 縦移動が多かったら、スワイプ中にする
+        if (ax < ay) {
+          e.preventDefault();
+          e.stopPropagation();
+          self._swiping = true;
+        }
+        else {
+          self._holdSwipe = false;
+        }
       }
       else {
-        self._holdSwipe = false;
+        // 横移動が多かったら、スワイプ中にする
+        if (ax > ay) {
+          e.preventDefault();
+          e.stopPropagation();
+          self._swiping = true;
+        }
+        else {
+          self._holdSwipe = false;
+        }
       }
       
     };
@@ -399,8 +441,14 @@ spat-nav
       var style = page.style;
       style.transition = '256ms';
       // 少しでも数値が変わらないと transitionend が発火しないので -0.1 にしている
-      var x = back ? '100%' : '-0.1px';
-      style.transform = 'translateX(' + x + ')';
+      var v = back ? '100%' : '-0.1px';
+      if (page.dataset.swipeDirection === 'bottom') {
+        style.transform = 'translateY(' + v + ')';
+      }
+      else {
+        style.transform = 'translateX(' + v + ')';
+      }
+      
       if (back) {
         style.opacity = '0';
       }
@@ -448,8 +496,14 @@ spat-nav
       self._swipeAnimation = true;
       var page = self._swipePage = self.currentPage;
       var style = page.style;
-      style.boxShadow = '0 0 100vw -1px rgba(0, 0, 0, 0.5)';
-      style.opacity = '1';
+      if (page.dataset.swipeDirection === 'bottom') {
+        style.boxShadow = '0 0 100vw -1px rgba(0, 0, 0, 0.5)';
+        style.opacity = '1';
+      }
+      else {
+        style.boxShadow = '0 0 100vw -1px rgba(0, 0, 0, 0.5)';
+        style.opacity = '1';
+      }
       var backPage = self.getPage(page.dataset.backId);
       if (backPage) {
         backPage.classList.remove('spat-hide');
@@ -459,15 +513,27 @@ spat-nav
 
     // スワイプ中のページの座標を更新する
     this._updatePageSwipe = function() {
-      self._swipePage.style.transform = 'translateX(' + Math.max(self.dx, 0) + 'px)';
+      if (self._swipePage.dataset.swipeDirection === 'bottom') {
+        self._swipePage.style.transform = 'translateY(' + Math.max(self.dy, 0) + 'px)';
+      }
+      else {
+        self._swipePage.style.transform = 'translateX(' + Math.max(self.dx, 0) + 'px)';
+      }
     };
 
     // 現時点でのスワイプ量がスワイプバックと判定されるかどうか
     this._checkSwipeBack = function() {
       var SWIPE_WIDTH_THRESHOLD = 0.5;
       var SWIPE_SPEED_THRESHOLD = 10;
-      var rate = self.dx / (innerWidth * SWIPE_WIDTH_THRESHOLD);
-      rate += self.mx / SWIPE_SPEED_THRESHOLD;
+      var rate = 0;
+      if (self._swipePage.dataset.swipeDirection === 'bottom') {
+        rate = self.dy / (innerHeight * SWIPE_WIDTH_THRESHOLD);
+        rate += self.my / SWIPE_SPEED_THRESHOLD;
+      }
+      else {
+        rate = self.dx / (innerWidth * SWIPE_WIDTH_THRESHOLD);
+        rate += self.mx / SWIPE_SPEED_THRESHOLD;
+      }
       return rate > 1;
     };
 
