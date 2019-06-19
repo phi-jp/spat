@@ -386,9 +386,13 @@ spat-nav
       if (self.currentPage.dataset.swipeDirection === 'bottom') {
         // 縦移動が多かったら、スワイプ中にする
         if (ax < ay) {
+          self._swiping = true;
+          //- そのページでも条件を満たしてない場合は何もしない
+          if (self.dy < 0 || self.currentPage._tag.checkSpatSwipe && !self.currentPage._tag.checkSpatSwipe()) {
+            return ;
+          }
           e.preventDefault();
           e.stopPropagation();
-          self._swiping = true;
         }
         else {
           self._holdSwipe = false;
@@ -397,9 +401,13 @@ spat-nav
       else {
         // 横移動が多かったら、スワイプ中にする
         if (ax > ay) {
+          self._swiping = true;
+          //- そのページでも条件を満たしてない場合は何もしない
+          if (self.currentPage._tag.checkSpatSwipe && !self.currentPage._tag.checkSpatSwipe()) {
+            return ;
+          }
           e.preventDefault();
           e.stopPropagation();
-          self._swiping = true;
         }
         else {
           self._holdSwipe = false;
