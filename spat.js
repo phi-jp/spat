@@ -503,6 +503,9 @@ riot.tag2('spat-nav', '<div class="spat-pages {\'scrollable\': opts.scrollable !
 
     this._swipe = function(e) {
       e.preventUpdate = true;
+      if (e.type === 'mousemove' && (e.buttons === 0 || !self._holdSwipe)) {
+        return ;
+      }
 
       if (!self._holdSwipe || e.defaultPrevented) {
         self.cancelSwipe();
@@ -647,6 +650,9 @@ riot.tag2('spat-nav', '<div class="spat-pages {\'scrollable\': opts.scrollable !
 
     this._swipeend = function(e) {
       e.preventUpdate = true;
+      if (e.type === 'mouseup' && !self._holdSwipe) {
+        return ;
+      }
       if (self._resetSwipe()) {
         e.preventDefault();
         e.stopPropagation();
