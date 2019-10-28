@@ -474,6 +474,9 @@ riot.tag2('spat-nav', '<div class="spat-pages {\'scrollable\': opts.scrollable !
 
     this._swipestart = function(e) {
       e.preventUpdate = true;
+      if (!self.currentPage) {
+        return ;
+      }
 
       if (self._locked || !self.currentPage.dataset.canBack || e.defaultPrevented) {
         self.cancelSwipe();
