@@ -301,6 +301,9 @@ spat-nav
     // スワイプ開始時の処理
     this._swipestart = function(e) {
       e.preventUpdate = true;
+      if (!self.currentPage) {
+        return ;
+      }
       // _locked か canBack が設定されてない場合か、イベントのデフォルト処理が無効化されているときは何もしない
       if (self._locked || !self.currentPage.dataset.canBack || e.defaultPrevented) {
         self.cancelSwipe();
