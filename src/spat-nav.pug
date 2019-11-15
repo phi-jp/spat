@@ -301,7 +301,7 @@ spat-nav
     // スワイプ開始時の処理
     this._swipestart = function(e) {
       e.preventUpdate = true;
-      if (!self.currentPage) {
+      if (!self.currentPage || self._swipeCanceled || self.currentFinger) {
         return ;
       }
       // _locked か canBack が設定されてない場合か、イベントのデフォルト処理が無効化されているときは何もしない
@@ -310,6 +310,7 @@ spat-nav
         return ;
       }
       var p = self.toPoint(e);
+      if (!p) return ;
       var hold = false;
 
       //- 下スワイプ
@@ -333,6 +334,7 @@ spat-nav
     // スワイプ中の処理
     this._swipe = function(e) {
       e.preventUpdate = true;
+      if (self._swipeCanceled) return ;
       if (e.type === 'mousemove' && (e.buttons === 0 || !self._holdSwipe)) {
         return ;
       }
@@ -342,6 +344,7 @@ spat-nav
         return ;
       }
       var p = self.toPoint(e);
+      if (!p) return ;
       self.mx = p.clientX - self.px;
       self.my = p.clientY - self.py;
       self.px = self.x;
@@ -493,6 +496,17 @@ spat-nav
       if (e.type === 'mouseup' && !self._holdSwipe) {
         return ;
       }
+      if (self._swipeCanceled) {
+        if (e.type === 'touchend') {
+          self._swipeCanceled = !!e.touches.length;
+        }
+        if (e.type === 'touchcancel') {
+          self._swipeCanceled = false;
+        }
+        if (self._swipeCanceled) {
+          return ;
+        }
+      }
       if (self._resetSwipe()) {
         e.preventDefault();
         e.stopPropagation();
@@ -502,6 +516,7 @@ spat-nav
     
     // スワイプ中にブラウザバックした場合などにスワイプをキャンセルする
     this.cancelSwipe = function() {
+      self._swipeCanceled = true;
       if (self._resetSwipe()) {
         self._releaseSwipe(false);
       }
