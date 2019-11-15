@@ -1,5 +1,5 @@
 spat-nav
-  div.spat-pages(class="{'scrollable': opts.scrollable !== false}", ref='pages', onmousedown='{_swipestart}', onmousemove='{_swipe}', onmouseup='{_swipeend}', ontouchstart='{_swipestart}', ontouchmove='{_swipe}', ontouchend='{_swipeend}', ondragend='{_swipeend}')
+  div.spat-pages(class="{'scrollable': opts.scrollable !== false}", ref='pages', onmousedown='{_swipestart}', onmousemove='{_swipe}', onmouseup='{_swipeend}', ontouchstart='{_swipestart}', ontouchmove='{_swipe}', ontouchend='{_swipeend}', ontouchcancel='{_swipeend}', ondragend='{_swipeend}')
   div.spat-lock(show='{_locked}', ref='lock', onmousemove='{_swipe}', onmouseup='{_swipeend}')
 
   style(scoped, type='less').
