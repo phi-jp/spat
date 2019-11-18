@@ -85,7 +85,7 @@ spat-modal(show='{visible}')
         e.preventDefault();
         var children = self.root.children;
         var child = children[children.length - 1];
-        child && child._tag.close();
+        child && child._tag && child._tag.close();
       }
     }, false);
 
@@ -96,7 +96,7 @@ spat-modal(show='{visible}')
       if (child) {
         // routeful 依存
         e.preventBack = true;
-        child._tag.close();
+        child._tag && child._tag.close();
       }
     }, false);
     
