@@ -41,7 +41,7 @@ var spat = {
 `;
 
 gulp.task('riot', function() {
-  gulp
+  return gulp
     .src(target)
     .pipe(riot({template:'pug'}))
     .pipe(sort())
@@ -58,8 +58,8 @@ gulp.task('riot', function() {
     ;
 });
 
-gulp.task('watch', function(){
-  gulp.watch(target, ['riot']);
+gulp.task('watch', () => {
+  return gulp.watch(target, gulp.task('riot'));
 });
 
-gulp.task('default', ['riot', 'watch']);
+gulp.task('default', gulp.series('riot', 'watch'));
