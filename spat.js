@@ -1,6 +1,6 @@
 
 /* 
- * spat 0.1.10
+ * spat 0.1.11
  * single page application framework for riot.js
  * MIT Licensed
  * 
