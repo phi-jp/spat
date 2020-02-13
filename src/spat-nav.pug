@@ -133,6 +133,10 @@ spat-nav
       this.refs.lock.style.backgroundColor = '';
       this.update();
     };
+
+    this.getCacheId = (tagName, opts) => {
+      return location.href.replace(location.origin, '');
+    };
     
     // pageId に一致するページを取得する
     this.getPage = function(pageId) {
@@ -143,7 +147,7 @@ spat-nav
       var prevPage = this.currentPage;
 
       // 現在の url を page id としてキャッシュ判定する
-      var pageId = location.href.replace(location.origin, '');
+      var pageId = this.getCacheId(tagName, opts);
       // マウント済みのページを取得
       var page = self.getPage(pageId);
       // キャッシュフラグ
