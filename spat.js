@@ -1,6 +1,6 @@
 
 /* 
- * spat 0.1.9
+ * spat 0.1.10
  * single page application framework for riot.js
  * MIT Licensed
  * 
@@ -324,6 +324,10 @@ riot.tag2('spat-nav', '<div class="spat-pages {\'scrollable\': opts.scrollable !
       this.update();
     };
 
+    this.getCacheId = (tagName, opts) => {
+      return location.href.replace(location.origin, '');
+    };
+
     this.getPage = function(pageId) {
       return self.refs.pages.querySelector('[data-page-id="' + pageId + '"]');
     };
@@ -331,7 +335,7 @@ riot.tag2('spat-nav', '<div class="spat-pages {\'scrollable\': opts.scrollable !
     this.swap = function(tagName, opts) {
       var prevPage = this.currentPage;
 
-      var pageId = location.href.replace(location.origin, '');
+      var pageId = this.getCacheId(tagName, opts);
 
       var page = self.getPage(pageId);
 
@@ -857,7 +861,7 @@ riot.tag2('spat-toast', '', 'spat-toast,[data-is="spat-toast"]{display:block;pos
     };
 
 });
-riot.tag2('spat-toast-item', '<span>{opts.text}</span>', 'spat-toast-item,[data-is="spat-toast-item"]{display:flex;padding:8px 20px;background-color:#808080;color:white;border-radius:3px;animation:toast-appear 500ms} spat-toast-item.disappear,[data-is="spat-toast-item"].disappear{animation:toast-disappear 500ms}@keyframes toast-appear{ 0%{transform:translateY(40px);opacity:0} 100%{transform:translateY(0);opacity:1}}@keyframes toast-disappear{ 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(-40px);opacity:0}}', '', function(opts) {
+riot.tag2('spat-toast-item', '<span>{opts.text}</span>', 'spat-toast-item,[data-is="spat-toast-item"]{display:flex;padding:8px 20px;background-color:hsl(0,0%,50%);color:white;border-radius:3px;animation:toast-appear 500ms} spat-toast-item.disappear,[data-is="spat-toast-item"].disappear{animation:toast-disappear 500ms}@keyframes toast-appear{ 0%{transform:translateY(40px);opacity:0} 100%{transform:translateY(0);opacity:1}}@keyframes toast-disappear{ 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(-40px);opacity:0}}', '', function(opts) {
     var self = this;
     var timeout = opts.timeout || 2000;
 
