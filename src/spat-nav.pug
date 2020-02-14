@@ -154,6 +154,8 @@ spat-nav
       var cached = false;
       
       // まだマウントされていなければ新たにマウントする
+
+      // キャッシュがなかった場合
       if(page === null) {
         page = document.createElement('div');
         page.classList.add('spat-page');
@@ -166,7 +168,8 @@ spat-nav
       }
       else {
         cached = true;
-        if (!this._back) {
+        // prev と今の page が違った場合は強制的に page を最前面にする
+        if (page !== prevPage && !this._back) {
           // 最前面に移動
           var parent = page.parentNode;
           parent.removeChild(page);
