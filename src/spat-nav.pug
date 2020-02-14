@@ -199,7 +199,14 @@ spat-nav
             console.log(Date.now() - d);
           }
         },
+      };
+
+      // prevPage がある場合は hide を呼ぶ
+      if (prevPage) {
+        prevPage._tag.trigger('hide', e);
+        prevPage._tag.update();
       }
+
       page.removeAttribute('data-can-back');
       page.removeAttribute('data-can-forward');
       page.removeAttribute('data-back-id');
@@ -207,11 +214,6 @@ spat-nav
       this.trigger('swap', e);
       page._tag.trigger('show', e);
       page._tag.update();
-
-      if (prevPage) {
-        prevPage._tag.trigger('hide', e);
-        prevPage._tag.update();
-      }
 
       if (this._autoRender) {
         this._swap(page, prevPage);
