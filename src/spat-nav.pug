@@ -154,6 +154,8 @@ spat-nav
       var cached = false;
       
       // まだマウントされていなければ新たにマウントする
+
+      // キャッシュがなかった場合
       if(page === null) {
         page = document.createElement('div');
         page.classList.add('spat-page');
@@ -166,7 +168,8 @@ spat-nav
       }
       else {
         cached = true;
-        if (!this._back) {
+        // prev と今の page が違った場合は強制的に page を最前面にする
+        if (page !== prevPage && !this._back) {
           // 最前面に移動
           var parent = page.parentNode;
           parent.removeChild(page);
@@ -196,7 +199,14 @@ spat-nav
             console.log(Date.now() - d);
           }
         },
+      };
+
+      // prevPage がある場合は hide を呼ぶ
+      if (prevPage) {
+        prevPage._tag.trigger('hide', e);
+        prevPage._tag.update();
       }
+
       page.removeAttribute('data-can-back');
       page.removeAttribute('data-can-forward');
       page.removeAttribute('data-back-id');
@@ -204,11 +214,6 @@ spat-nav
       this.trigger('swap', e);
       page._tag.trigger('show', e);
       page._tag.update();
-
-      if (prevPage) {
-        prevPage._tag.trigger('hide', e);
-        prevPage._tag.update();
-      }
 
       if (this._autoRender) {
         this._swap(page, prevPage);
