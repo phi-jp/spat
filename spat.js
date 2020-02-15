@@ -1,6 +1,6 @@
 
 /* 
- * spat 0.1.11
+ * spat 0.1.12
  * single page application framework for riot.js
  * MIT Licensed
  * 
@@ -353,7 +353,8 @@ riot.tag2('spat-nav', '<div class="spat-pages {\'scrollable\': opts.scrollable !
       }
       else {
         cached = true;
-        if (!this._back) {
+
+        if (page !== prevPage && !this._back) {
 
           var parent = page.parentNode;
           parent.removeChild(page);
@@ -381,7 +382,13 @@ riot.tag2('spat-nav', '<div class="spat-pages {\'scrollable\': opts.scrollable !
             console.log(Date.now() - d);
           }
         },
+      };
+
+      if (prevPage) {
+        prevPage._tag.trigger('hide', e);
+        prevPage._tag.update();
       }
+
       page.removeAttribute('data-can-back');
       page.removeAttribute('data-can-forward');
       page.removeAttribute('data-back-id');
@@ -389,11 +396,6 @@ riot.tag2('spat-nav', '<div class="spat-pages {\'scrollable\': opts.scrollable !
       this.trigger('swap', e);
       page._tag.trigger('show', e);
       page._tag.update();
-
-      if (prevPage) {
-        prevPage._tag.trigger('hide', e);
-        prevPage._tag.update();
-      }
 
       if (this._autoRender) {
         this._swap(page, prevPage);
