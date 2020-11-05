@@ -625,6 +625,8 @@ riot.tag2('spat-nav', '<div class="spat-pages {\'scrollable\': opts.scrollable !
       var style = page.style;
       style.transition = '256ms';
 
+      page.offsetWidth;
+
       var v = back ? '100%' : '-0.1px';
       if (page.dataset.swipeDirection === 'bottom') {
         style.transform = 'translateY(' + v + ')';

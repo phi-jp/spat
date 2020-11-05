@@ -466,6 +466,8 @@ spat-nav
       self._swipePage = null;
       var style = page.style;
       style.transition = '256ms';
+      // iOS 14 で transition が内部的に反映されない不具合の対策
+      page.offsetWidth;
       // 少しでも数値が変わらないと transitionend が発火しないので -0.1 にしている
       var v = back ? '100%' : '-0.1px';
       if (page.dataset.swipeDirection === 'bottom') {
